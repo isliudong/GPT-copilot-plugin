@@ -10,6 +10,7 @@
               semantic analysis, and other advanced features, optimizing user experience.
              In summary, "ChatGPT Copilot" is an efficient development plugin based on the Chat GPT official website's functionality,
              which can greatly improve developers' development efficiency and help them complete related work more conveniently and easily.</p>
+<p>Statement: Any personal data will only interact between the local device and the chaGPT server. This plugin will not collect any user data.</p>
              <br/>
              <br/>
 <h1>ChatGPT Copilot 中文</h1>
@@ -21,3 +22,4 @@
             优化用户使用体验。
             总之，「ChatGPT Copilot」是一款基于Chat GPT官网功能的高效开发插件，能够大大提升开发者的开发效率，帮助开发者更加便捷、轻松地完成相关的工作。
             </p>
+<p>声明：任何个人数据仅在本地与chaGPT服务器之间交互，本插件不会收集任何用户数据</p>

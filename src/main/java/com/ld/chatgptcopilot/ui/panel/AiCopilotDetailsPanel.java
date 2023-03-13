@@ -101,13 +101,12 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
             String text = textArea.getText();
             if (text != null && !text.isEmpty()) {
                 ChatChannel.Message message = new ChatChannel.Message("user", text);
-                chatChannel.getMessages().add(message);
                 chatPanel.loading();
                 scrollToBottom(chatScrollPane);
                 chatScrollPane.revalidate();
                 chatScrollPane.repaint();
                 ThreadUtil.execAsync(() -> {
-                    chatPanel.postToAi(chatChannel);
+                    chatPanel.postToAi(chatChannel, message);
                     SwingUtilities.invokeLater(() -> {
                         showChannel(chatChannel);
                         chatScrollPane.revalidate();

@@ -1,4 +1,4 @@
-<h3>1.0.0-SNAPSHOT</h3>
+<h3>0.1.1</h3>
 <p>Integrated Chat GPT</p>
 
 

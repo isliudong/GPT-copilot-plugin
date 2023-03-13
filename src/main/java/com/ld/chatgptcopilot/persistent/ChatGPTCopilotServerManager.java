@@ -11,6 +11,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.intellij.util.xmlb.annotations.Tag;
 import com.intellij.util.xmlb.annotations.XCollection;
 import com.ld.chatgptcopilot.server.ChatGPTCopilotServer;
+import com.ld.chatgptcopilot.util.IdeaUtil;
 import com.ld.chatgptcopilot.util.SimpleSelectableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -73,6 +74,10 @@ public class ChatGPTCopilotServerManager implements PersistentStateComponent<Cha
     }
 
     public String getAPIToken() {
+        if (getCurrentChatGPTCopilotServer() == null||getCurrentChatGPTCopilotServer().getApiToken()==null) {
+            IdeaUtil.showNotification("configure","Please configure your ChatGPT Copilot API Token");
+            return null;
+        }
         return getCurrentChatGPTCopilotServer().getApiToken();
     }
 

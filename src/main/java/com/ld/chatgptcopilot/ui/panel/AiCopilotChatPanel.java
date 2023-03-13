@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.util.ui.JBUI;
-import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.persistent.ChatGPTCopilotServerManager;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotPanelUtil;
@@ -58,13 +57,18 @@ public class AiCopilotChatPanel extends JBPanel {
         });
     }
 
-    public void postToAi(ChatChannel chatChannel) {
+    public void postToAi(ChatChannel chatChannel, ChatChannel.Message newMessage) {
+        String apiToken = project.getComponent(ChatGPTCopilotServerManager.class).getAPIToken();
+        if (apiToken == null) {
+            return;
+        }
         ChatChannel data = new ChatChannel();
         BeanUtil.copyProperties(chatChannel, data);
         data.setName(null);
+        data.getMessages().add(newMessage);
         HttpRequest request = HttpRequest.post("https://api.openai.com/v1/chat/completions")
                 .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer "+project.getComponent(ChatGPTCopilotServerManager.class).getAPIToken())
+                .header("Authorization", "Bearer "+ apiToken)
                 .timeout(20000)
                 .body(JSONUtil.toJsonStr(data));
         try (HttpResponse response = request.execute()) {
@@ -72,6 +76,7 @@ public class AiCopilotChatPanel extends JBPanel {
             //反序列化 ChatChannel
             ObjectMapper mapper = new ObjectMapper();
             ChatChannel chatChannel1 = mapper.readValue(body, ChatChannel.class);
+            chatChannel.getMessages().add(newMessage);
             chatChannel.getMessages().add(chatChannel1.getChoices().get(0).getMessage());
             //归纳聊天主题
             ThreadUtil.execAsync(()->summaryTitle(chatChannel));
@@ -88,8 +93,7 @@ public class AiCopilotChatPanel extends JBPanel {
             ChatChannel.Message message = new ChatChannel.Message();
             message.setContent("What is the topic of our chat?");
             message.setRole("user");
-            target.getMessages().add(message);
-            postToAi(target);
+            postToAi(target, message);
             chatChannel.setName(target.getMessages().get(target.getMessages().size()-1).getContent());
         }
     }
