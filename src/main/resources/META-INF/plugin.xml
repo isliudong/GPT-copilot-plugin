@@ -1,0 +1,60 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>com.ld.chatGPT-copilot</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+    <name>ChatGPT Copilot</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor email="2351036454@qq.com" url="http://xn--fjqz24bfqeo5p.site/">LD</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+    <description><![CDATA[
+            <p>ChatGPT Copilot</p>
+            <p>"ChatGPT Copilot" is a plugin based on the integration of the Chat GPT official website's functionality,
+             designed specifically for developers' daily development work.
+             It integrates the Chat GPT official website's excellent natural language processing capabilities,
+             allowing developers to quickly complete operations through concise and intuitive natural language commands,
+             thereby improving development efficiency.
+             Based on the integration of official website functionality, the plugin also adds some unique features,
+             such as personalized natural language commands, which allow developers to customize commands according to their needs,
+             and easily call the relevant functions of built-in or external libraries. In addition, the plugin also supports practical shortcut key settings,
+              semantic analysis, and other advanced features, optimizing user experience.
+             In summary, "ChatGPT Copilot" is an efficient development plugin based on the Chat GPT official website's functionality,
+             which can greatly improve developers' development efficiency and help them complete related work more conveniently and easily.</p>
+
+        ]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <application-components>
+        <component>
+            <implementation-class>com.ld.chatgptcopilot.component.ChatGPTCopilotNotificationManager
+            </implementation-class>
+        </component>
+
+    </application-components>
+    <project-components>
+        <component>
+            <implementation-class>com.ld.chatgptcopilot.persistent.ChatGPTCopilotServerManager</implementation-class>
+        </component>
+        <component>
+            <implementation-class>com.ld.chatgptcopilot.persistent.ChatGPTCopilotChannelManager</implementation-class>
+        </component>
+    </project-components>
+
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="ChatGPT Copilot" anchor="bottom" icon="/icons/chatGPT-copilot-logo-square.svg"
+                    factoryClass="com.ld.chatgptcopilot.ui.ChatGPTCopilotToolWindowFactory"/>
+        <notificationGroup id="ChatGPTCopilot.BALLOON" displayType="BALLOON"/>
+        <notificationGroup id="ChatGPTCopilot.STICKY_BALLOON" displayType="STICKY_BALLOON"/>
+    </extensions>
+</idea-plugin>
