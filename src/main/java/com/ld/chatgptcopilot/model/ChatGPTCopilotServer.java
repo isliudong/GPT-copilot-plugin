@@ -1,4 +1,4 @@
-package com.ld.chatgptcopilot.server;
+package com.ld.chatgptcopilot.model;
 
 import static com.intellij.openapi.util.text.StringUtil.trim;
 

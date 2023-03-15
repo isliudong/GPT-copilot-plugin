@@ -12,7 +12,7 @@ import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.JBUI;
-import com.ld.chatgptcopilot.server.ChatGPTCopilotServer;
+import com.ld.chatgptcopilot.model.ChatGPTCopilotServer;
 
 public class ChatGPTCopilotServerUserAndPassAuthEditor extends ChatGPTCopilotServerAuthEditor {
 

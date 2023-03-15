@@ -62,4 +62,12 @@ public class ChatChannel {
         chatChannel.setMessages(new ArrayList<>());
         return chatChannel;
     }
+
+    //最后一条消息内容
+    public String getLastMessageContent() {
+        if (messages == null || messages.isEmpty()) {
+            return "no message";
+        }
+        return messages.get(messages.size() - 1).getContent();
+    }
 }

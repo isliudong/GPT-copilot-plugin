@@ -15,8 +15,7 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.tasks.TaskRepository;
 import com.ld.chatgptcopilot.model.ChatChannel;
-import com.ld.chatgptcopilot.persistent.ChatGPTCopilotServerManager;
-import com.ld.chatgptcopilot.server.ChatGPTCopilotServer;
+import com.ld.chatgptcopilot.model.ChatGPTCopilotServer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

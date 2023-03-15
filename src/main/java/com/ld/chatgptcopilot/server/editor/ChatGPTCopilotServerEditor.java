@@ -6,7 +6,7 @@ import javax.swing.*;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ui.FormBuilder;
-import com.ld.chatgptcopilot.server.ChatGPTCopilotServer;
+import com.ld.chatgptcopilot.model.ChatGPTCopilotServer;
 import com.ld.chatgptcopilot.ui.ChatGPTCopilotTabbedPane;
 
 public class ChatGPTCopilotServerEditor {

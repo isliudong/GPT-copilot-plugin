@@ -21,7 +21,7 @@ import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.JBUI;
 import com.ld.chatgptcopilot.actions.coffee.SupportView;
-import com.ld.chatgptcopilot.server.ChatGPTCopilotServer;
+import com.ld.chatgptcopilot.model.ChatGPTCopilotServer;
 import com.ld.chatgptcopilot.tasks.TestChatGPTCopilotServerConnectionTask;
 import org.jetbrains.annotations.NotNull;
 

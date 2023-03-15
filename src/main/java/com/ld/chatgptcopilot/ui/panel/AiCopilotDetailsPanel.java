@@ -88,7 +88,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
         JBScrollPane scrollPane = new JBScrollPane(textArea);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         inputPanel.add(scrollPane);
-        JButton button = new JButton("发送");
+        JButton button = new JButton("Send");
         textArea.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {

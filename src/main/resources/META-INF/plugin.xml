@@ -8,7 +8,7 @@
     <name>ChatGPT Copilot</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor email="2351036454@qq.com" url="http://xn--fjqz24bfqeo5p.site/">LD</vendor>
+    <vendor email="2351036454@qq.com" url="https://plugins.jetbrains.com/author/412a7743-4102-49a0-954d-8ba33b91d2a4">LD</vendor>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
@@ -57,4 +57,22 @@
         <notificationGroup id="ChatGPTCopilot.BALLOON" displayType="BALLOON"/>
         <notificationGroup id="ChatGPTCopilot.STICKY_BALLOON" displayType="STICKY_BALLOON"/>
     </extensions>
+    <actions>
+        <action id="com.ld.chatgptcopilot.actions.AskChatGPTAction"
+                class="com.ld.chatgptcopilot.actions.AskChatGPTAction" icon="ChatGPTCopilotIcons.pluginIcon"
+                text="Ask Copilot" description="Ask the ai copilot">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <add-to-group group-id="ConsoleView.PopupMenu" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl a"/>
+        </action>
+        <group id="ChatGPTCopilot.customActionGroup" class="com.ld.chatgptcopilot.actions.DynamicActionGroup"
+               popup="true"
+               icon="ChatGPTCopilotIcons.pluginIcon"
+               text="Dynamic Action" description="Dynamic action">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="com.ld.chatgptcopilot.actions.AskChatGPTAction"/>
+            <add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="com.ld.chatgptcopilot.actions.AskChatGPTAction"/>
+            <add-to-group group-id="ConsoleView.PopupMenu" anchor="after" relative-to-action="com.ld.chatgptcopilot.actions.AskChatGPTAction"/>
+        </group>
+    </actions>
 </idea-plugin>

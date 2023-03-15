@@ -38,10 +38,17 @@ public class ChatGPTCopilotChannelManager implements PersistentStateComponent<Ch
                 chatChannel.setMessages(new ArrayList<>());
             }
         });
+
+        if (state.getDynamicCommends() == null) {
+            state.setDynamicCommends(new ArrayList<>());
+        }
     }
 
     public List<ChatChannel> getChatChannels() {
         return getState().chatChannels;
+    }
+    public List<String> getDynamicCommends() {
+        return getState().dynamicCommends;
     }
 
     public void add(ChatChannel chatChannel) {
@@ -54,6 +61,8 @@ public class ChatGPTCopilotChannelManager implements PersistentStateComponent<Ch
 
     @Data
     public static class State {
+        @XCollection(propertyElementName = "dynamicCommends")
+        public List<String> dynamicCommends = new ArrayList<>();
         @XCollection(propertyElementName = "chatChannels")
         public List<ChatChannel> chatChannels = new ArrayList<>();
     }
