@@ -20,9 +20,9 @@ repositories {
 
 //依赖
 dependencies {
-    implementation("org.projectlombok:lombok:1.18.24")
-    annotationProcessor("org.projectlombok:lombok:1.18.24")
-    implementation("cn.hutool:hutool-all:5.8.11")
+    implementation("org.projectlombok:lombok:1.18.26")
+    annotationProcessor("org.projectlombok:lombok:1.18.26")
+    implementation("cn.hutool:hutool-all:5.8.15")
     implementation("org.apache.commons:commons-lang3:3.12.0")
 }
 
