@@ -141,6 +141,8 @@ public class ChatGPTCopilotUtil {
                     }
                 }
                 assistant.loadingEnd();
+                message.removeMessage(user);
+                message.removeMessage(assistant);
                 if (runnable != null) {
                     runnable.run();
                 }

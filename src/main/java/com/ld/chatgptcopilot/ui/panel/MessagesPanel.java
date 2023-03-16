@@ -43,8 +43,9 @@ public class MessagesPanel extends JBPanel {
         add(message);
     }
 
-    public void removeMessage(ChatChannel.Message assistantMess) {
-        messageList.remove(assistantMess);
-        messageItemList.removeIf(item -> item.getMessage().equals(assistantMess));
+    public void removeMessage(AiCopilotChatPanel.MessageItem messageItem) {
+        messageList.remove(messageItem.getMessage());
+        messageItemList.removeIf(item -> item.getMessage().equals(messageItem.getMessage()));
+        remove(messageItem);
     }
 }

@@ -8,26 +8,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.accessibility.AccessibleContext;
 import javax.swing.*;
 
 import com.intellij.ide.util.TipUIUtil;
-import com.intellij.notification.impl.ui.NotificationsUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.components.JBPanel;
-import com.intellij.util.FontUtil;
 import com.intellij.util.ui.HtmlPanel;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
-import com.intellij.webSymbols.utils.HtmlMarkdownUtils;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotPanelUtil;
 import com.ld.chatgptcopilot.util.IdeaUtil;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-import org.intellij.plugins.markdown.ui.preview.MarkdownHtmlPanel;
-import org.intellij.plugins.markdown.ui.preview.MarkdownPreviewFileEditorProvider;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +35,7 @@ public class AiCopilotChatPanel extends JBPanel {
     public AiCopilotChatPanel(ChatChannel chatChannel, Project project) {
         this.chatChannel = chatChannel;
         this.project = project;
-        messagesPanel = new MessagesPanel(chatChannel.getMessages(),this);
+        messagesPanel = new MessagesPanel(chatChannel.getMessages(), this);
         setContent();
     }
 
@@ -93,7 +86,6 @@ public class AiCopilotChatPanel extends JBPanel {
         }
 
 
-
         //@Override
         //public void paint(Graphics g) {
         //    int fieldX = 0;
@@ -133,11 +125,10 @@ public class AiCopilotChatPanel extends JBPanel {
 
                 message.setContent(collect);
 
-                browser.setText(HtmlMarkdownUtils.toHtml(collect));
+                browser.setText(IdeaUtil.md2html(collect));
                 browser.getComponent().revalidate();
                 browser.getComponent().repaint();
                 browser.getComponent().updateUI();
-
 
 
                 this.revalidate();
