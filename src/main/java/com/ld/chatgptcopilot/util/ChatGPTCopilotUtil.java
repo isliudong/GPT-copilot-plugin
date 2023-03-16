@@ -130,14 +130,14 @@ public class ChatGPTCopilotUtil {
             public void onFailure(@NotNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
                 super.onFailure(eventSource, t, response);
                 if (t != null) {
-                    assistant.appendContent(t.getMessage());
+                    IdeaUtil.showFailedNotification("AI Copilot is sick：" + t.getMessage());
                 }
 
                 if (response != null && response.body() != null) {
                     try {
-                        assistant.appendContent(response.body().string());
+                        IdeaUtil.showFailedNotification("AI Copilot is sick：" + response.body().string());
                     } catch (IOException e) {
-                        assistant.appendContent(e.getMessage());
+                        IdeaUtil.showFailedNotification("AI Copilot is sick：" + e.getMessage());
                     }
                 }
                 assistant.loadingEnd();
