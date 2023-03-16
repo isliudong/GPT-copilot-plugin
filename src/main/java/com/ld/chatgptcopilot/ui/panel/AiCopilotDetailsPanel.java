@@ -22,7 +22,9 @@ import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextArea;
 import com.ld.chatgptcopilot.model.ChatChannel;
+import com.ld.chatgptcopilot.persistent.ChatGPTCopilotServerManager;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotPanelUtil;
+import com.ld.chatgptcopilot.util.ChatGPTCopilotUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -101,16 +103,15 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
             String text = textArea.getText();
             if (text != null && !text.isEmpty()) {
                 ChatChannel.Message message = new ChatChannel.Message("user", text);
-                chatPanel.loading();
                 scrollToBottom(chatScrollPane);
                 chatScrollPane.revalidate();
                 chatScrollPane.repaint();
                 ThreadUtil.execAsync(() -> {
-                    chatPanel.postToAi(chatChannel, message);
-                    SwingUtilities.invokeLater(() -> {
-                        showChannel(chatChannel);
-                        chatScrollPane.revalidate();
-                    });
+                    String apiToken = project.getComponent(ChatGPTCopilotServerManager.class).getAPIToken();
+                    if (apiToken == null) {
+                        return;
+                    }
+                    ChatGPTCopilotUtil.postToAiAndUpdateUi(chatPanel.messagesPanel,chatChannel, message,apiToken,()->scrollToBottom(chatScrollPane));
                 });
 
 

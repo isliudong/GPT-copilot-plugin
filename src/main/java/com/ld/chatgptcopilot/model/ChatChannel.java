@@ -3,7 +3,6 @@ package com.ld.chatgptcopilot.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.intellij.util.xmlb.annotations.CollectionBean;
 import com.intellij.util.xmlb.annotations.Tag;
 import com.intellij.util.xmlb.annotations.XCollection;
 import lombok.AllArgsConstructor;
@@ -23,6 +22,8 @@ public class ChatChannel {
     private Long created;
     private String model;
     private Usage usage;
+
+    private Boolean stream;
     private List<Choice> choices;
     @XCollection
     private List<Message> messages;
@@ -54,6 +55,7 @@ public class ChatChannel {
         private Message message;
         private String finish_reason;
         private Integer index;
+        private Message delta;
     }
 
     public static ChatChannel newChannel() {
@@ -69,5 +71,13 @@ public class ChatChannel {
             return "no message";
         }
         return messages.get(messages.size() - 1).getContent();
+    }
+
+    //最后一条消息
+    public Message getLastMessage() {
+        if (messages == null || messages.isEmpty()) {
+            return null;
+        }
+        return messages.get(messages.size() - 1);
     }
 }

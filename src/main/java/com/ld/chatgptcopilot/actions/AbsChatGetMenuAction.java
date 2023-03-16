@@ -39,7 +39,7 @@ public abstract class AbsChatGetMenuAction extends ChatGPTCopilotComponentAction
 
         ThreadUtil.execAsync(() -> {
             ChatGPTCopilotUtil.postToAi(chatChannel, null, apiToken, () -> {
-                JComponent markdownComponent = IdeaUtil.getMarkdownComponent(chatChannel.getLastMessageContent());
+                JComponent markdownComponent = IdeaUtil.getMarkdownComponent(chatChannel.getLastMessageContent()).getComponent();
                 //创建一个大小合适的面板来显示回复信息
                 SwingUtilities.invokeLater(() -> {
                     JBScrollPane jbScrollPane = new JBScrollPane(markdownComponent);

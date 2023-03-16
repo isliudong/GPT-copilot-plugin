@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.ld"
-version = "0.3.0"
+version = "0.3.2"
 
 repositories {
     //阿里云仓库
@@ -24,6 +24,8 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.26")
     implementation("cn.hutool:hutool-all:5.8.15")
     implementation("org.apache.commons:commons-lang3:3.12.0")
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("com.squareup.okhttp3:okhttp-sse:4.10.0")
 }
 
 

@@ -5,115 +5,94 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.accessibility.AccessibleContext;
 import javax.swing.*;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
-import cn.hutool.json.JSONUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.intellij.ide.util.TipUIUtil;
+import com.intellij.notification.impl.ui.NotificationsUtil;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.components.JBPanel;
+import com.intellij.util.FontUtil;
+import com.intellij.util.ui.HtmlPanel;
 import com.intellij.util.ui.JBUI;
+import com.intellij.util.ui.UIUtil;
+import com.intellij.webSymbols.utils.HtmlMarkdownUtils;
 import com.ld.chatgptcopilot.model.ChatChannel;
-import com.ld.chatgptcopilot.persistent.ChatGPTCopilotServerManager;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotPanelUtil;
 import com.ld.chatgptcopilot.util.IdeaUtil;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
+import org.intellij.plugins.markdown.ui.preview.MarkdownHtmlPanel;
+import org.intellij.plugins.markdown.ui.preview.MarkdownPreviewFileEditorProvider;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 
 public class AiCopilotChatPanel extends JBPanel {
     private Project project;
     private ChatChannel chatChannel;
+    MessagesPanel messagesPanel;
+
     JBPanel loadingPanel = ChatGPTCopilotPanelUtil.createLoadingPanel();
-
-
-    JBPanel<JBPanel> messagesPanel = new JBPanel<>();
 
 
     public AiCopilotChatPanel(ChatChannel chatChannel, Project project) {
         this.chatChannel = chatChannel;
         this.project = project;
+        messagesPanel = new MessagesPanel(chatChannel.getMessages(),this);
         setContent();
     }
 
     private void setContent() {
         setLayout(new BorderLayout());
-        load(chatChannel.getMessages());
-
         add(messagesPanel, BorderLayout.CENTER);
         //内容空白区域弹性填充
         //add(Box.createVerticalGlue(), BorderLayout.CENTER);
     }
 
-    public void load(List<ChatChannel.Message> messages) {
-        //消息列表
-        messagesPanel.setLayout(new BoxLayout(messagesPanel, BoxLayout.Y_AXIS));
-        messagesPanel.removeAll();
-        messages.forEach(message -> {
-            MessageItem item = new MessageItem(message);
-            messagesPanel.add(item);
-        });
-    }
-
-    public void postToAi(ChatChannel chatChannel, ChatChannel.Message newMessage) {
-        String apiToken = project.getComponent(ChatGPTCopilotServerManager.class).getAPIToken();
-        if (apiToken == null) {
-            return;
-        }
-        ChatChannel data = new ChatChannel();
-        BeanUtil.copyProperties(chatChannel, data);
-        data.setName(null);
-        data.getMessages().add(newMessage);
-        HttpRequest request = HttpRequest.post("https://api.openai.com/v1/chat/completions")
-                .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer "+ apiToken)
-                .timeout(20000)
-                .body(JSONUtil.toJsonStr(data));
-        try (HttpResponse response = request.execute()) {
-            String body = response.body();
-            //反序列化 ChatChannel
-            ObjectMapper mapper = new ObjectMapper();
-            ChatChannel chatChannel1 = mapper.readValue(body, ChatChannel.class);
-            chatChannel.getMessages().add(newMessage);
-            chatChannel.getMessages().add(chatChannel1.getChoices().get(0).getMessage());
-            //归纳聊天主题
-            ThreadUtil.execAsync(()->summaryTitle(chatChannel));
-
-        } catch (Exception e) {
-            IdeaUtil.showFailedNotification("AI Copilot is sick："+e.getMessage());
-        }
-    }
-
-    private void summaryTitle(ChatChannel chatChannel) {
-        if (chatChannel.getMessages().size() == 6) {
-            ChatChannel target = new ChatChannel();
-            BeanUtil.copyProperties(chatChannel, target);
-            ChatChannel.Message message = new ChatChannel.Message();
-            message.setContent("What is the topic of our chat?");
-            message.setRole("user");
-            postToAi(target, message);
-            chatChannel.setName(target.getMessages().get(target.getMessages().size()-1).getContent());
-        }
-    }
 
     public void loading() {
         messagesPanel.add(loadingPanel);
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Data
+    public void loadingEnd() {
+        messagesPanel.remove(loadingPanel);
+    }
+
     public static class MessageItem extends JBPanel {
+        @Getter
         private final ChatChannel.Message message;
+        @Getter
+        private final MessagesPanel messagesPanel;
+        @Getter
+        private MessageHtmlPanel htmlPanel;
+        @Getter
+        private TipUIUtil.Browser browser;
+
+        JBPanel loadingPanel = ChatGPTCopilotPanelUtil.createLoadingPanel();
+
 
         private List<Runnable> refreshListeners = new ArrayList<>();
 
-        public MessageItem(ChatChannel.Message message) {
+        public MessageItem(ChatChannel.Message message, MessagesPanel messagesPanel) {
             this.message = message;
+            this.messagesPanel = messagesPanel;
             initUi();
             addComponentHover(this);
         }
+
+        public void loading() {
+            this.add(loadingPanel);
+        }
+
+        public void loadingEnd() {
+            this.remove(loadingPanel);
+        }
+
+
 
         //@Override
         //public void paint(Graphics g) {
@@ -138,18 +117,43 @@ public class AiCopilotChatPanel extends JBPanel {
 
             String noteBody = message.getContent();
             //按markdown格式解析为html panel
-            JComponent markdownComponent = IdeaUtil.getMarkdownComponent(noteBody);
+            browser = IdeaUtil.getMarkdownComponent(noteBody);
+            browser.getComponent().setFont(JBUI.Fonts.smallFont());
 
-            JTextArea contentTextArea = new JTextArea(noteBody);
-            contentTextArea.setBorder(JBUI.Borders.empty());
-            //字体大小
-            contentTextArea.setFont(JBUI.Fonts.label(14));
-            //无法编辑
-            contentTextArea.setEditable(false);
-            //自动滚动的文本框
-            contentTextArea.setLineWrap(true);
-            contentTextArea.setWrapStyleWord(true);
-            add(markdownComponent);
+            add(browser.getComponent());
+        }
+
+        //更新内容
+        public void appendContent(String content) {
+            String collect = Stream.of(message.getContent(), content).filter(Objects::nonNull).collect(Collectors.joining());
+            if (StringUtils.isBlank(collect)) {
+                return;
+            }
+            SwingUtilities.invokeLater(() -> {
+
+                message.setContent(collect);
+
+                browser.setText(HtmlMarkdownUtils.toHtml(collect));
+                browser.getComponent().revalidate();
+                browser.getComponent().repaint();
+                browser.getComponent().updateUI();
+
+
+
+                this.revalidate();
+                this.repaint();
+                this.updateUI();
+
+                messagesPanel.revalidate();
+                messagesPanel.repaint();
+                messagesPanel.updateUI();
+
+                messagesPanel.getParent().revalidate();
+                messagesPanel.getParent().repaint();
+
+
+            });
+            refreshListeners.forEach(Runnable::run);
         }
 
         // 鼠标hover监听
@@ -170,5 +174,26 @@ public class AiCopilotChatPanel extends JBPanel {
             });
         }
     }
+
+    public static class MessageHtmlPanel extends HtmlPanel {
+
+        private String message = "";
+
+        @Override
+        protected @NotNull @Nls String getBody() {
+            return StringUtils.isEmpty(message) ? "" : message;
+        }
+
+        @Override
+        protected @NotNull Font getBodyFont() {
+            return UIUtil.getLabelFont();
+        }
+
+        public void updateMessage(String updateMessage) {
+            this.message = updateMessage;
+            update();
+        }
+    }
+
 
 }
