@@ -32,15 +32,6 @@ public class ChatChannel {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Message {
-        private String role;
-        private String content;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class Usage {
         private Integer prompt_tokens;
         private Integer completion_tokens;

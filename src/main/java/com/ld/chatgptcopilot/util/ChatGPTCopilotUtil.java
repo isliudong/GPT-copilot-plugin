@@ -16,7 +16,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.util.text.DateFormatUtil;
 import com.ld.chatgptcopilot.model.ChatChannel;
+import com.ld.chatgptcopilot.model.Message;
 import com.ld.chatgptcopilot.ui.panel.AiCopilotChatPanel;
+import com.ld.chatgptcopilot.ui.panel.AiCopilotDetailsPanel;
 import com.ld.chatgptcopilot.ui.panel.MessagesPanel;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -36,7 +38,7 @@ public class ChatGPTCopilotUtil {
         return nonNull(date) ? DateFormatUtil.formatPrettyDateTime(date) : "";
     }
 
-    public static void postToAi(@NotNull ChatChannel chatChannel, @Nullable ChatChannel.Message newMessage, @NotNull String apiToken, @Nullable Runnable runnable) {
+    public static void postToAi(@NotNull ChatChannel chatChannel, @Nullable Message newMessage, @NotNull String apiToken, @Nullable Runnable runnable) {
         ChatChannel data = new ChatChannel();
         BeanUtil.copyProperties(chatChannel, data);
         data.setName(null);
@@ -67,7 +69,7 @@ public class ChatGPTCopilotUtil {
         }
     }
 
-    public static void postToAiAndUpdateUi(MessagesPanel message, @NotNull ChatChannel chatChannel, @Nullable ChatChannel.Message newMessage, @NotNull String apiToken, @Nullable Runnable runnable) {
+    public static void postToAiAndUpdateUi(MessagesPanel messagesPanel, @NotNull ChatChannel chatChannel, @Nullable Message newMessage, @NotNull String apiToken, @Nullable Runnable runnable) {
         ChatChannel data = new ChatChannel();
         BeanUtil.copyProperties(chatChannel, data);
         data.setName(null);
@@ -91,18 +93,29 @@ public class ChatGPTCopilotUtil {
                 .build();
 
 
-        AiCopilotChatPanel.MessageItem user = new AiCopilotChatPanel.MessageItem(newMessage, message);
-        ChatChannel.Message assistantMess = new ChatChannel.Message("assistant", "");
-        AiCopilotChatPanel.MessageItem assistant = new AiCopilotChatPanel.MessageItem(assistantMess, message);
-        message.addMessage(user);
-        message.addMessage(assistant);
+        AiCopilotChatPanel.MessageItem user = new AiCopilotChatPanel.MessageItem(newMessage, messagesPanel);
+        Message assistantMess = new Message("assistant", "");
+        AiCopilotChatPanel.MessageItem assistant = new AiCopilotChatPanel.MessageItem(assistantMess, messagesPanel);
+        messagesPanel.addMessage(user);
+        messagesPanel.addMessage(assistant);
         assistant.loading();
 
         EventSourceListener listener = new EventSourceListener() {
+            private boolean success = false;
+
             @Override
             public void onClosed(@NotNull EventSource eventSource) {
                 super.onClosed(eventSource);
                 assistant.loadingEnd();
+                if (success) {
+                    //归纳聊天主题
+                    ThreadUtil.execAsync(() -> summaryTitle(chatChannel, apiToken));
+                } else {
+                    messagesPanel.removeMessage(user);
+                    messagesPanel.removeMessage(assistant);
+                    AiCopilotDetailsPanel.InputPanel inputPanel = messagesPanel.getAiCopilotChatPanel().getAiCopilotDetailsPanel().getInputPanel();
+                    inputPanel.restoreLastText();
+                }
             }
 
             @Override
@@ -111,6 +124,7 @@ public class ChatGPTCopilotUtil {
                 super.onEvent(eventSource, id, type, data);
 
                 if ("[DONE]".equals(data)) {
+                    success = true;
                     return;
                 }
                 //反序列化 ChatChannel
@@ -141,8 +155,11 @@ public class ChatGPTCopilotUtil {
                     }
                 }
                 assistant.loadingEnd();
-                message.removeMessage(user);
-                message.removeMessage(assistant);
+                if (!success) {
+                    messagesPanel.getAiCopilotChatPanel().getAiCopilotDetailsPanel().getInputPanel().restoreLastText();
+                    messagesPanel.removeMessage(user);
+                    messagesPanel.removeMessage(assistant);
+                }
                 if (runnable != null) {
                     runnable.run();
                 }
@@ -165,7 +182,7 @@ public class ChatGPTCopilotUtil {
         if (chatChannel.getMessages().size() == 6) {
             ChatChannel target = new ChatChannel();
             BeanUtil.copyProperties(chatChannel, target);
-            ChatChannel.Message message = new ChatChannel.Message();
+            Message message = new Message();
             message.setContent("What is the topic of our chat?");
             message.setRole("user");
             postToAi(target, message, apiToken, null);

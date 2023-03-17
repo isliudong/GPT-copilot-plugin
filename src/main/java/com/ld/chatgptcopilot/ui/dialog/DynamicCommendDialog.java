@@ -1,9 +1,11 @@
 package com.ld.chatgptcopilot.ui.dialog;
 
+
 import static com.intellij.openapi.ui.Messages.getCancelButton;
 import static com.intellij.openapi.ui.Messages.getOkButton;
 
 import java.awt.*;
+import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 
@@ -15,9 +17,9 @@ import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.ListTableModel;
+import com.ld.chatgptcopilot.model.DynamicCommend;
 import com.ld.chatgptcopilot.persistent.ChatGPTCopilotChannelManager;
 import com.ld.chatgptcopilot.ui.table.column.DynamicColumnInfoHelper;
-import com.ld.chatgptcopilot.util.ChatGPTCopilotPanelUtil;
 import com.ld.chatgptcopilot.util.MyResourceBundleUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -25,15 +27,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class DynamicCommendDialog extends DialogWrapper {
 
-    private final static JPanel EMPTY_PANEL = ChatGPTCopilotPanelUtil.createPlaceHolderPanel("No server selected.").withMinimumWidth(450).withMinimumHeight(100);
-    private final static String EMPTY_PANEL_NAME = "empty.panel";
-
     private final Project project;
     private final ChatGPTCopilotChannelManager chatGPTCopilotChannelManager;
 
-    private EditeAbleList<String> commendList;
+    private EditeAbleList<DynamicCommend> commendList;
 
-    ListTableModel<String> listModel = new ListTableModel<>(DynamicColumnInfoHelper.getHelper().generateColumnsInfo());
+    ListTableModel<DynamicCommend> listModel = new ListTableModel<>(DynamicColumnInfoHelper.getHelper().generateColumnsInfo());
 
 
     public DynamicCommendDialog(@NotNull Project project) {
@@ -50,7 +49,7 @@ public class DynamicCommendDialog extends DialogWrapper {
 
         // servers
         for (String server : chatGPTCopilotChannelManager.getDynamicCommends()) {
-            listModel.addRow(server);
+            listModel.addRow(new DynamicCommend(server));
         }
 
         commendList = new EditeAbleList<>(listModel);
@@ -69,18 +68,22 @@ public class DynamicCommendDialog extends DialogWrapper {
 
     @Override
     protected void doOKAction() {
+        //无法触发失焦自动保存，手动保存表格
+        if (commendList.getCellEditor() != null) {
+            commendList.getCellEditor().stopCellEditing();
+        }
         if (!validateServers()) {
             return;
         }
         chatGPTCopilotChannelManager.getDynamicCommends().clear();
-        chatGPTCopilotChannelManager.getDynamicCommends().addAll(listModel.getItems());
+        chatGPTCopilotChannelManager.getDynamicCommends().addAll(listModel.getItems().stream().map(DynamicCommend::getContent).collect(Collectors.toList()));
 
         super.doOKAction();
     }
 
     private boolean validateServers() {
-        for (String item : listModel.getItems()) {
-            if (StringUtils.isBlank(item)) {
+        for (DynamicCommend item : listModel.getItems()) {
+            if (StringUtils.isBlank(item.getContent())) {
                 Messages.showErrorDialog("Commend is required", MyResourceBundleUtil.getKey("Error"));
                 return false;
             }
@@ -108,7 +111,7 @@ public class DynamicCommendDialog extends DialogWrapper {
 
 
     private void addCommend() {
-        listModel.addRow("");
+        listModel.addRow(new DynamicCommend(""));
     }
 
 
@@ -124,6 +127,7 @@ public class DynamicCommendDialog extends DialogWrapper {
 
     static class EditeAbleList<T> extends JBTable {
         ListTableModel<T> listTableModel;
+
         public EditeAbleList(ListTableModel<T> listTableModel) {
             super(listTableModel);
             this.listTableModel = listTableModel;
@@ -137,12 +141,6 @@ public class DynamicCommendDialog extends DialogWrapper {
         @Override
         public TableCellEditor getCellEditor(int row, int column) {
             return super.getCellEditor(row, column);
-        }
-
-        @Override
-        public void setValueAt(Object aValue, int row, int column) {
-            super.setValueAt(aValue, row, column);//父类方法无效
-            listTableModel.setValueAt(aValue, row, column);
         }
     }
 }

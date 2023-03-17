@@ -7,10 +7,8 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 
-import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.util.ui.ColumnInfo;
-import com.intellij.util.ui.ImmutableColumnInfo;
-import com.ld.chatgptcopilot.ui.table.render.DefaultChatGPTCopilotNoteTableCellRenderer;
+import com.ld.chatgptcopilot.model.DynamicCommend;
 import com.ld.chatgptcopilot.ui.table.render.DefaultChatGPTCopilotTableCellRenderer;
 import icons.ChatGPTCopilotIcons;
 import org.jetbrains.annotations.NotNull;
@@ -36,22 +34,22 @@ public class DynamicColumnInfoHelper {
     }
 
     @NotNull
-    public ColumnInfo<String, String>[] generateColumnsInfo() {
+    public ColumnInfo<DynamicCommend, String>[] generateColumnsInfo() {
         return new ColumnInfo[]{
                 new DynamicColumnInfoHelper.TitleColumnInfo()
         };
     }
 
 
-    private abstract static class ChatGPTCopilotNoteColumnInfo extends ColumnInfo<String, String> {
-        ChatGPTCopilotNoteColumnInfo(@NotNull String name) {
+    private abstract static class ChatGPTCopilotColumnInfo extends ColumnInfo<DynamicCommend, String> {
+        ChatGPTCopilotColumnInfo(@NotNull String name) {
             super(name);
         }
 
         @Nullable
         @Override
-        public TableCellRenderer getRenderer(String note) {
-            return new DefaultChatGPTCopilotTableCellRenderer(){
+        public TableCellRenderer getRenderer(DynamicCommend DynamicCommend) {
+            return new DefaultChatGPTCopilotTableCellRenderer() {
                 @Override
                 public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                     super.getTableCellRendererComponent(table, value, isSelected, false, row, column);
@@ -65,7 +63,7 @@ public class DynamicColumnInfoHelper {
     }
 
 
-    private static class TitleColumnInfo extends DynamicColumnInfoHelper.ChatGPTCopilotNoteColumnInfo {
+    private static class TitleColumnInfo extends ChatGPTCopilotColumnInfo {
 
         TitleColumnInfo() {
             super(COMMEND_COLUMN);
@@ -73,13 +71,13 @@ public class DynamicColumnInfoHelper {
 
         @Nullable
         @Override
-        public String valueOf(String item) {
-            return item;
+        public String valueOf(DynamicCommend item) {
+            return item.getContent();
         }
 
         @Override
-        public void setValue(String s, String value) {
-            super.setValue(s, value);
+        public void setValue(DynamicCommend s, String value) {
+            s.setContent(value);
         }
     }
 

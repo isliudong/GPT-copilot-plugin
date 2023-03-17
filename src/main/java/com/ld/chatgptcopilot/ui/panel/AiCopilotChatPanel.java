@@ -3,6 +3,7 @@ package com.ld.chatgptcopilot.ui.panel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,11 +13,14 @@ import javax.swing.*;
 
 import com.intellij.ide.util.TipUIUtil;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.Gray;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.util.ui.HtmlPanel;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
 import com.ld.chatgptcopilot.model.ChatChannel;
+import com.ld.chatgptcopilot.model.Message;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotPanelUtil;
 import com.ld.chatgptcopilot.util.IdeaUtil;
 import lombok.Getter;
@@ -25,6 +29,8 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
 public class AiCopilotChatPanel extends JBPanel {
+    @Getter
+    private AiCopilotDetailsPanel aiCopilotDetailsPanel;
     private Project project;
     private ChatChannel chatChannel;
     MessagesPanel messagesPanel;
@@ -32,9 +38,10 @@ public class AiCopilotChatPanel extends JBPanel {
     JBPanel loadingPanel = ChatGPTCopilotPanelUtil.createLoadingPanel();
 
 
-    public AiCopilotChatPanel(ChatChannel chatChannel, Project project) {
+    public AiCopilotChatPanel(ChatChannel chatChannel, Project project, AiCopilotDetailsPanel aiCopilotDetailsPanel) {
         this.chatChannel = chatChannel;
         this.project = project;
+        this.aiCopilotDetailsPanel = aiCopilotDetailsPanel;
         messagesPanel = new MessagesPanel(chatChannel.getMessages(), this);
         setContent();
     }
@@ -57,7 +64,7 @@ public class AiCopilotChatPanel extends JBPanel {
 
     public static class MessageItem extends JBPanel {
         @Getter
-        private final ChatChannel.Message message;
+        private final Message message;
         @Getter
         private final MessagesPanel messagesPanel;
         @Getter
@@ -70,7 +77,7 @@ public class AiCopilotChatPanel extends JBPanel {
 
         private List<Runnable> refreshListeners = new ArrayList<>();
 
-        public MessageItem(ChatChannel.Message message, MessagesPanel messagesPanel) {
+        public MessageItem(Message message, MessagesPanel messagesPanel) {
             this.message = message;
             this.messagesPanel = messagesPanel;
             initUi();
@@ -110,8 +117,13 @@ public class AiCopilotChatPanel extends JBPanel {
             String noteBody = message.getContent();
             //按markdown格式解析为html panel
             browser = IdeaUtil.getMarkdownComponent(noteBody);
-            browser.getComponent().setFont(JBUI.Fonts.smallFont());
+            //使用微软雅黑高亮字体
+            browser.getComponent().setFont(new Font("微软雅黑", Font.PLAIN, 13));
+            //纯白字体，纯黑色背景
+            browser.getComponent().setForeground(JBColor.foreground());
+            //设置背景色,使用控制台日志背景色
 
+            browser.getComponent().setBackground(new JBColor(UIUtil.getTextFieldBackground(), Gray._43));
             add(browser.getComponent());
         }
 
@@ -121,29 +133,31 @@ public class AiCopilotChatPanel extends JBPanel {
             if (StringUtils.isBlank(collect)) {
                 return;
             }
-            SwingUtilities.invokeLater(() -> {
+            try {
+                SwingUtilities.invokeAndWait(() -> {
+                    message.setContent(collect);
 
-                message.setContent(collect);
-
-                browser.setText(IdeaUtil.md2html(collect));
-                browser.getComponent().revalidate();
-                browser.getComponent().repaint();
-                browser.getComponent().updateUI();
-
-
-                this.revalidate();
-                this.repaint();
-                this.updateUI();
-
-                messagesPanel.revalidate();
-                messagesPanel.repaint();
-                messagesPanel.updateUI();
-
-                messagesPanel.getParent().revalidate();
-                messagesPanel.getParent().repaint();
+                    browser.setText(IdeaUtil.md2html(collect));
+                    browser.getComponent().revalidate();
+                    browser.getComponent().repaint();
+                    browser.getComponent().updateUI();
 
 
-            });
+                    this.revalidate();
+                    this.repaint();
+                    this.updateUI();
+
+                    messagesPanel.revalidate();
+                    messagesPanel.repaint();
+                    messagesPanel.updateUI();
+
+                    messagesPanel.getParent().revalidate();
+                    messagesPanel.getParent().repaint();
+                });
+            } catch (InterruptedException | InvocationTargetException e) {
+                e.printStackTrace();
+                IdeaUtil.showFailedNotification(e.getMessage());
+            }
             refreshListeners.forEach(Runnable::run);
         }
 

@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.ld"
-version = "0.3.2"
+version = "0.4.0"
 
 repositories {
     //阿里云仓库
@@ -67,7 +67,7 @@ tasks {
     }
     runIde {
         autoReloadPlugins.set(true)
-        jvmArgs("-Xmx1536m")
+        jvmArgs = listOf("-Xmx1536m", "-XX:+AllowEnhancedClassRedefinition")
     }
 
 

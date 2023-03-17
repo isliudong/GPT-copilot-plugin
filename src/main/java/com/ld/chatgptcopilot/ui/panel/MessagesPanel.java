@@ -7,7 +7,7 @@ import java.util.List;
 import javax.swing.*;
 
 import com.intellij.ui.components.JBPanel;
-import com.ld.chatgptcopilot.model.ChatChannel;
+import com.ld.chatgptcopilot.model.Message;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,11 +15,11 @@ import lombok.EqualsAndHashCode;
 @Data
 public class MessagesPanel extends JBPanel {
 
-    private final List<ChatChannel.Message> messageList;
+    private final List<Message> messageList;
     private final AiCopilotChatPanel aiCopilotChatPanel;
     private final List<AiCopilotChatPanel.MessageItem> messageItemList=new ArrayList<>();
 
-    public MessagesPanel(List<ChatChannel.Message> messageList, AiCopilotChatPanel aiCopilotChatPanel) {
+    public MessagesPanel(List<Message> messageList, AiCopilotChatPanel aiCopilotChatPanel) {
         super(new BorderLayout());
         this.messageList = messageList;
         this.aiCopilotChatPanel = aiCopilotChatPanel;

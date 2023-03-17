@@ -9,7 +9,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.*;
 
 import cn.hutool.core.thread.ThreadUtil;
@@ -22,9 +21,11 @@ import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextArea;
 import com.ld.chatgptcopilot.model.ChatChannel;
+import com.ld.chatgptcopilot.model.Message;
 import com.ld.chatgptcopilot.persistent.ChatGPTCopilotServerManager;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotPanelUtil;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotUtil;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,6 +35,10 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
     private final Project project;
     private final Map<String, Integer> data = new HashMap<>();
 
+    @Getter
+    AiCopilotChatPanel chatPanel;
+    @Getter
+    InputPanel inputPanel;
     JScrollPane chatScrollPane;
 
     public AiCopilotDetailsPanel(Project project) {
@@ -48,7 +53,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
             return;
         }
         //创建一个聊天面板来显示聊天信息
-        AiCopilotChatPanel chatPanel = new AiCopilotChatPanel(chatChannel,project);
+        chatPanel = new AiCopilotChatPanel(chatChannel, project, this);
         chatScrollPane = ScrollPaneFactory.createScrollPane(chatPanel);
         //禁止水平滚动
         chatScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -57,7 +62,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
         //分割面板
         Splitter splitter = new Splitter(true, 1f);
         splitter.setFirstComponent(chatScrollPane);
-        JBPanel inputPanel = getInputPanel(chatChannel, chatPanel);
+        inputPanel = new InputPanel(chatChannel, chatPanel);
         splitter.setSecondComponent(inputPanel);
         setContent(splitter);
     }
@@ -66,7 +71,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
         AdjustmentListener downScroller = new AdjustmentListener() {
             @Override
             public void adjustmentValueChanged(AdjustmentEvent e) {
-                 e.getAdjustable().setValue(e.getAdjustable().getMaximum());
+                e.getAdjustable().setValue(e.getAdjustable().getMaximum());
                 scrollPane.getVerticalScrollBar().removeAdjustmentListener(this);
             }
         };
@@ -74,58 +79,88 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
     }
 
 
-    @NotNull
-    private JBPanel getInputPanel(@NotNull ChatChannel chatChannel, AiCopilotChatPanel chatPanel) {
-        JBPanel inputPanel = new JBPanel();
-        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
-        inputPanel.setMinimumSize(new Dimension(0, 100));
-        //设置黑边
-        inputPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, JBColor.WHITE));
+    public class InputPanel extends JBPanel {
 
         JBTextArea textArea = new JBTextArea();
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        //移除默认的下边框
-        textArea.setBorder(BorderFactory.createEmptyBorder());
-        JBScrollPane scrollPane = new JBScrollPane(textArea);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        inputPanel.add(scrollPane);
-        JButton button = new JButton("Send");
-        textArea.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER && e.isControlDown()) {
-                    button.doClick();
-                }
-            }
-        });
-        button.addActionListener(e -> {
-            String text = textArea.getText();
-            if (text != null && !text.isEmpty()) {
-                ChatChannel.Message message = new ChatChannel.Message("user", text);
-                scrollToBottom(chatScrollPane);
-                chatScrollPane.revalidate();
-                chatScrollPane.repaint();
-                ThreadUtil.execAsync(() -> {
-                    String apiToken = project.getComponent(ChatGPTCopilotServerManager.class).getAPIToken();
-                    if (apiToken == null) {
-                        return;
+        String lastText = "";
+
+        public InputPanel(@NotNull ChatChannel chatChannel, AiCopilotChatPanel chatPanel) {
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            setMinimumSize(new Dimension(0, 100));
+            //设置黑边
+            setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, JBColor.WHITE));
+
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            //移除默认的下边框
+            textArea.setBorder(BorderFactory.createEmptyBorder());
+            JBScrollPane scrollPane = new JBScrollPane(textArea);
+            scrollPane.setBorder(BorderFactory.createEmptyBorder());
+            add(scrollPane);
+            JButton button = new JButton("Send");
+
+            //按下ctrl+enter换行，按下enter发送消息
+            textArea.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER && e.isControlDown()) {
+                        textArea.append("\n");
+                    } else if (e.getKeyCode() == KeyEvent.VK_ENTER && !e.isControlDown()) {
+                        e.consume();
+                        button.doClick();
                     }
-                    ChatGPTCopilotUtil.postToAiAndUpdateUi(chatPanel.messagesPanel,chatChannel, message,apiToken,()->scrollToBottom(chatScrollPane));
-                });
+                }
+            });
+            button.addActionListener(e -> {
+                String text = textArea.getText();
+                setText("");
+                if (text != null && !text.isEmpty()) {
+                    Message message = new Message("user", text);
+                    scrollToBottom(chatScrollPane);
+                    chatScrollPane.revalidate();
+                    chatScrollPane.repaint();
+                    ThreadUtil.execAsync(() -> {
+                        String apiToken = project.getComponent(ChatGPTCopilotServerManager.class).getAPIToken();
+                        if (apiToken == null) {
+                            return;
+                        }
+                        ChatGPTCopilotUtil.postToAiAndUpdateUi(chatPanel.messagesPanel, chatChannel, message, apiToken, () -> scrollToBottom(chatScrollPane));
+                    });
 
 
-            }
-        });
-        JBPanel buttonJBPanel = new JBPanel<>(new BorderLayout());
-        buttonJBPanel.setBackground(textArea.getBackground());
-        button.setBackground(textArea.getBackground());
-        buttonJBPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
-        buttonJBPanel.add(button, BorderLayout.EAST);
-        buttonJBPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 4, 4));
-        inputPanel.add(buttonJBPanel);
-        return inputPanel;
+                }
+            });
+            JBPanel buttonJBPanel = new JBPanel<>(new BorderLayout());
+            buttonJBPanel.setBackground(textArea.getBackground());
+            button.setBackground(textArea.getBackground());
+            buttonJBPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
+            buttonJBPanel.add(button, BorderLayout.EAST);
+            buttonJBPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 4, 4));
+            add(buttonJBPanel);
+        }
+
+        //获取输入框的内容
+        public String getText() {
+            return textArea.getText();
+        }
+
+        //设置输入框的内容
+        public void setText(String text) {
+            lastText = textArea.getText();
+            textArea.setText(text);
+        }
+
+        //上次输入的内容
+        public String getLastText() {
+            return lastText;
+        }
+
+        //恢复上次输入的内容
+        public void restoreLastText() {
+            textArea.setText(lastText);
+        }
     }
+
 
     public void setEmptyContent() {
         setContent(ChatGPTCopilotPanelUtil.createPlaceHolderPanel("Select issue to view details"));

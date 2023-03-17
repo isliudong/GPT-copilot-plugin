@@ -8,6 +8,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.ld.chatgptcopilot.commen.ActionProperties;
 import com.ld.chatgptcopilot.model.ChatChannel;
+import com.ld.chatgptcopilot.model.Message;
 import icons.ChatGPTCopilotIcons;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,8 +29,8 @@ public class AskChatGPTAction extends AbsChatGetMenuAction {
         Editor editor = e.getRequiredData(CommonDataKeys.EDITOR);
         String selectedText = editor.getSelectionModel().getSelectedText();
         ChatChannel chatChannel = ChatChannel.newChannel();
-        ChatChannel.Message message1 = ChatChannel.Message.builder().role("user").content("解释这段文本内容：").build();
-        ChatChannel.Message message2 = ChatChannel.Message.builder().role("user").content(selectedText).build();
+        Message message1 = Message.builder().role("user").content("解释这段文本内容：").build();
+        Message message2 = Message.builder().role("user").content(selectedText).build();
         chatChannel.getMessages().add(message1);
         chatChannel.getMessages().add(message2);
         askCopilot(project, editor, chatChannel);

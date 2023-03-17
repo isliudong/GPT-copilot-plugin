@@ -16,7 +16,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.tasks.TaskRepository;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.model.ChatGPTCopilotServer;
-import com.ld.chatgptcopilot.util.ChatGPTCopilotUtil;
+import com.ld.chatgptcopilot.model.Message;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +34,7 @@ public class TestChatGPTCopilotServerConnectionTask extends Task.Modal {
         this.connection = new TaskRepository.CancellableConnection() {
             protected void doTest() throws Exception {
                 ChatChannel chatChannel = ChatChannel.newChannel();
-                chatChannel.getMessages().add(ChatChannel.Message.builder().role("user").content("hello").build());
+                chatChannel.getMessages().add(Message.builder().role("user").content("hello").build());
                 HttpRequest request = HttpRequest.post("https://api.openai.com/v1/chat/completions")
                         .header("Content-Type", "application/json")
                         .header("Authorization", "Bearer " + ChatGPTCopilotServer.getApiToken())

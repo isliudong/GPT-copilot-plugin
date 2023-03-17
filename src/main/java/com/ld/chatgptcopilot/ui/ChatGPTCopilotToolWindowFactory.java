@@ -4,6 +4,7 @@ package com.ld.chatgptcopilot.ui;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.openapi.wm.ToolWindowType;
 import com.intellij.ui.content.Content;
@@ -34,6 +35,9 @@ public class ChatGPTCopilotToolWindowFactory implements ToolWindowFactory, DumbA
         Content aiContent = factory.createContent(aiCopilotPanel, TAB_AI_COPILOT, false);
         contentManager.addDataProvider(aiCopilotPanel);
         contentManager.addContent(aiContent);
+
+        //放在编辑器左侧
+        toolWindow.setAnchor(ToolWindowAnchor.LEFT, null);
     }
 
 }
