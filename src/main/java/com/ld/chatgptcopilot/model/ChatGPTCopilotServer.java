@@ -164,7 +164,7 @@ public class ChatGPTCopilotServer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChatGPTCopilotServer that = (ChatGPTCopilotServer) o;
-        return name.equals(that.name);
+        return Objects.equals(name, that.name);
     }
 
     @Override
