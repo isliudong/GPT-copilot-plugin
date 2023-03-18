@@ -120,7 +120,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
                     chatScrollPane.revalidate();
                     chatScrollPane.repaint();
                     ThreadUtil.execAsync(() -> {
-                        String apiToken = project.getComponent(ChatGPTCopilotServerManager.class).getAPIToken();
+                        String apiToken = ChatGPTCopilotServerManager.getInstance().getAPIToken();
                         if (apiToken == null) {
                             return;
                         }

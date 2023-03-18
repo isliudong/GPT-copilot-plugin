@@ -63,7 +63,7 @@ public class ConfigureChatGptDialog extends DialogWrapper {
     public ConfigureChatGptDialog(@NotNull Project project) {
         super(project, false);
         this.project = project;
-        this.chatGPTCopilotServerManager = project.getComponent(ChatGPTCopilotServerManager.class);
+        this.chatGPTCopilotServerManager = ChatGPTCopilotServerManager.getInstance();
         init();
     }
 

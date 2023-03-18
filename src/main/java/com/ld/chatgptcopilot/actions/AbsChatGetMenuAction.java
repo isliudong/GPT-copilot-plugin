@@ -26,7 +26,7 @@ public abstract class AbsChatGetMenuAction extends ChatGPTCopilotComponentAction
     }
 
     protected static void askCopilot(Project project, Editor editor, ChatChannel chatChannel) {
-        String apiToken = project.getComponent(ChatGPTCopilotServerManager.class).getAPIToken();
+        String apiToken = ChatGPTCopilotServerManager.getInstance().getAPIToken();
         JBPanel<JBPanel> jbPanelJBPanel = new JBPanel<>(new BorderLayout());
         jbPanelJBPanel.setPreferredSize(new Dimension(400, 300));
         JBPanel loadingPanel = ChatGPTCopilotPanelUtil.createLoadingPanel();
