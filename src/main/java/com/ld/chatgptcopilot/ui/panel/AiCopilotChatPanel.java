@@ -123,7 +123,9 @@ public class AiCopilotChatPanel extends JBPanel {
             browser.getComponent().setForeground(JBColor.foreground());
             //设置背景色,使用控制台日志背景色
 
-            browser.getComponent().setBackground(new JBColor(UIUtil.getTextFieldBackground(), Gray._43));
+            JBColor background = new JBColor(UIUtil.getTextFieldBackground(), Gray._43);
+            browser.getComponent().setBackground(background);
+            loadingPanel.setBackground(background);
             add(browser.getComponent());
         }
 

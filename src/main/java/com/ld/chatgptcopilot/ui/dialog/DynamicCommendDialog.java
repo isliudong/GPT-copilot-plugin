@@ -39,6 +39,7 @@ public class DynamicCommendDialog extends DialogWrapper {
         super(project, false);
         this.project = project;
         this.chatGPTCopilotChannelManager = project.getComponent(ChatGPTCopilotChannelManager.class);
+        this.setSize(600, 400);
         init();
     }
 
@@ -53,6 +54,7 @@ public class DynamicCommendDialog extends DialogWrapper {
         }
 
         commendList = new EditeAbleList<>(listModel);
+        commendList.setTableHeader(null);
         commendList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         setTitle(MyResourceBundleUtil.getKey("Configure_Commends"));
