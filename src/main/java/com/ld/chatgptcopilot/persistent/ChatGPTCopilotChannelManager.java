@@ -6,15 +6,13 @@ import java.util.List;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.intellij.util.xmlb.annotations.XCollection;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-@State(name = "ChatGPTCopilotChannelManager", storages = @Storage(StoragePathMacros.WORKSPACE_FILE))
+@State(name = "ChatGPTCopilotChannelManager", storages = @Storage("ChatGPTCopilotChannelManager.xml"))
 public class ChatGPTCopilotChannelManager implements PersistentStateComponent<ChatGPTCopilotChannelManager.State> {
 
     private final State state = new State();
@@ -47,6 +45,7 @@ public class ChatGPTCopilotChannelManager implements PersistentStateComponent<Ch
     public List<ChatChannel> getChatChannels() {
         return getState().chatChannels;
     }
+
     public List<String> getDynamicCommends() {
         return getState().dynamicCommends;
     }

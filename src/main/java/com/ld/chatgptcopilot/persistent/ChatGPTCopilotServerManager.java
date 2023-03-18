@@ -6,7 +6,6 @@ import java.util.List;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.intellij.util.xmlb.annotations.Tag;
 import com.intellij.util.xmlb.annotations.XCollection;
@@ -16,7 +15,7 @@ import com.ld.chatgptcopilot.util.SimpleSelectableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@State(name = "ChatGPTCopilotServerManager", storages = @Storage(StoragePathMacros.WORKSPACE_FILE))
+@State(name = "ChatGPTCopilotServerManager", storages = @Storage("ChatGPTCopilotServerManager.xml"))
 public class ChatGPTCopilotServerManager implements PersistentStateComponent<ChatGPTCopilotServerManager.Config> {
 
     private final List<Runnable> listeners = new ArrayList<>();
@@ -74,8 +73,8 @@ public class ChatGPTCopilotServerManager implements PersistentStateComponent<Cha
     }
 
     public String getAPIToken() {
-        if (getCurrentChatGPTCopilotServer() == null||getCurrentChatGPTCopilotServer().getApiToken()==null) {
-            IdeaUtil.showNotification("configure","Please configure your ChatGPT Copilot API Token");
+        if (getCurrentChatGPTCopilotServer() == null || getCurrentChatGPTCopilotServer().getApiToken() == null) {
+            IdeaUtil.showNotification("configure", "Please configure your ChatGPT Copilot API Token");
             return null;
         }
         return getCurrentChatGPTCopilotServer().getApiToken();

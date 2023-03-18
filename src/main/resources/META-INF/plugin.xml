@@ -39,12 +39,12 @@
             <implementation-class>com.ld.chatgptcopilot.component.ChatGPTCopilotNotificationManager
             </implementation-class>
         </component>
-
-    </application-components>
-    <project-components>
         <component>
             <implementation-class>com.ld.chatgptcopilot.persistent.ChatGPTCopilotServerManager</implementation-class>
         </component>
+    </application-components>
+    <project-components>
+
         <component>
             <implementation-class>com.ld.chatgptcopilot.persistent.ChatGPTCopilotChannelManager</implementation-class>
         </component>
