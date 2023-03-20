@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.ld"
-version = "0.5.0"
+version = "0.5.1"
 
 repositories {
     //阿里云仓库
@@ -45,8 +45,8 @@ fun dateValue(pattern: String) = LocalDate.now(ZoneId.of("Asia/Shanghai")).forma
 tasks {
     // Set the JVM compatibility versions
     withType<JavaCompile> {
-        sourceCompatibility = "17"
-        targetCompatibility = "17"
+        sourceCompatibility = "11"
+        targetCompatibility = "11"
     }
 
     patchPluginXml {

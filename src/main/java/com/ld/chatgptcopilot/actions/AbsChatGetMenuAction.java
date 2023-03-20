@@ -1,6 +1,7 @@
 package com.ld.chatgptcopilot.actions;
 
 import java.awt.*;
+import java.awt.geom.RoundRectangle2D;
 import javax.swing.*;
 
 import cn.hutool.core.thread.ThreadUtil;
@@ -27,7 +28,7 @@ public abstract class AbsChatGetMenuAction extends ChatGPTCopilotComponentAction
 
     protected static void askCopilot(Project project, Editor editor, ChatChannel chatChannel) {
         String apiToken = ChatGPTCopilotServerManager.getInstance().getAPIToken();
-        JBPanel<JBPanel> jbPanelJBPanel = new JBPanel<>(new BorderLayout());
+        PopupPanel jbPanelJBPanel = new PopupPanel(new BorderLayout());
         jbPanelJBPanel.setPreferredSize(new Dimension(400, 300));
         JBPanel loadingPanel = ChatGPTCopilotPanelUtil.createLoadingPanel();
         loadingPanel.setPreferredSize(new Dimension(300, 500));
@@ -50,5 +51,30 @@ public abstract class AbsChatGetMenuAction extends ChatGPTCopilotComponentAction
                 });
             });
         });
+    }
+
+    static class PopupPanel extends JBPanel {
+        public PopupPanel(LayoutManager layout) {
+            super(layout);
+            setOpaque(true);
+            int fieldWeight = getSize().width;
+            int fieldHeight = getSize().height;
+            setSize(fieldWeight+5, fieldHeight+5);
+
+        }
+
+        @Override
+        public void paint(Graphics g) {
+            super.paint(g);
+            int fieldX = 0;
+            int fieldY = 0;
+            int fieldWeight = getSize().width;
+            int fieldHeight = getSize().height;
+            Graphics2D g2d=(Graphics2D)g;
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setColor(getBackground());
+            g.fillRoundRect(fieldX, fieldY, fieldWeight, fieldHeight, 20, 20);
+            super.paintChildren(g);//可以正常显示该组件中添加的组件
+        }
     }
 }
