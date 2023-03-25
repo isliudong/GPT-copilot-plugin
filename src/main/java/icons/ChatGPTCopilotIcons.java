@@ -13,6 +13,7 @@ public interface ChatGPTCopilotIcons {
     Icon pluginIcon = IconLoader.getIcon("icons/chatGPT-copilot-logo-square.svg", ChatGPTCopilotIcons.class);
     Icon update = IconLoader.getIcon("icons/update.svg", ChatGPTCopilotIcons.class);
     Icon muti_comment = IconLoader.getIcon("icons/muti-comment.svg", ChatGPTCopilotIcons.class);
+    Icon muti_comment_hover = IconLoader.getIcon("icons/muti-comment-hover.svg", ChatGPTCopilotIcons.class);
     ProcessIcon processIcon = new ProcessIcon();
     ImageIcon loading = new ImageIcon(getResource("icons/loading.gif"));
     ScalableIconComponent imageIconCom_loading = new ScalableIconComponent(ChatGPTCopilotIcons.loading);

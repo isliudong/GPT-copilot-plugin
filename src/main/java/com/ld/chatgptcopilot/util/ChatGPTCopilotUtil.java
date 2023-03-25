@@ -3,6 +3,7 @@ package com.ld.chatgptcopilot.util;
 import static java.util.Objects.nonNull;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -17,9 +18,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.util.text.DateFormatUtil;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.model.Message;
-import com.ld.chatgptcopilot.ui.panel.AiCopilotChatPanel;
 import com.ld.chatgptcopilot.ui.panel.AiCopilotDetailsPanel;
-import com.ld.chatgptcopilot.ui.panel.MessagesPanel;
+import com.ld.chatgptcopilot.ui.panel.MessageItemPanel;
+import com.ld.chatgptcopilot.ui.panel.MessageListPanel;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -41,7 +42,10 @@ public class ChatGPTCopilotUtil {
     public static void postToAi(@NotNull ChatChannel chatChannel, @Nullable Message newMessage, @NotNull String apiToken, @Nullable Runnable runnable) {
         ChatChannel data = new ChatChannel();
         BeanUtil.copyProperties(chatChannel, data);
-        data.setName(null);
+        if (!chatChannel.isContinuouing()) {
+            data.setMessages(new ArrayList<>());
+        }
+        data.clearOther();
         if (newMessage != null) {
             data.getMessages().add(newMessage);
         }
@@ -69,10 +73,14 @@ public class ChatGPTCopilotUtil {
         }
     }
 
-    public static void postToAiAndUpdateUi(MessagesPanel messagesPanel, @NotNull ChatChannel chatChannel, @Nullable Message newMessage, @NotNull String apiToken, @Nullable Runnable runnable) {
-        ChatChannel data = new ChatChannel();
+    public static void postToAiAndUpdateUi(MessageListPanel messageListPanel, @NotNull ChatChannel chatChannel, @Nullable Message newMessage, @NotNull String apiToken, @Nullable Runnable runnable) {
+        ChatChannel data = ChatChannel.newChannel();
         BeanUtil.copyProperties(chatChannel, data);
-        data.setName(null);
+
+        if (!chatChannel.isContinuouing()) {
+            data.setMessages(new ArrayList<>());
+        }
+        data.clearOther();
         data.setStream(true);
         if (newMessage != null) {
             data.getMessages().add(newMessage);
@@ -93,11 +101,11 @@ public class ChatGPTCopilotUtil {
                 .build();
 
 
-        AiCopilotChatPanel.MessageItem user = new AiCopilotChatPanel.MessageItem(newMessage, messagesPanel);
+        MessageItemPanel user = new MessageItemPanel(newMessage, messageListPanel);
         Message assistantMess = new Message("assistant", "");
-        AiCopilotChatPanel.MessageItem assistant = new AiCopilotChatPanel.MessageItem(assistantMess, messagesPanel);
-        messagesPanel.addMessage(user);
-        messagesPanel.addMessage(assistant);
+        MessageItemPanel assistant = new MessageItemPanel(assistantMess, messageListPanel);
+        messageListPanel.addMessage(user);
+        messageListPanel.addMessage(assistant);
         assistant.loading();
 
         EventSourceListener listener = new EventSourceListener() {
@@ -111,9 +119,9 @@ public class ChatGPTCopilotUtil {
                     //归纳聊天主题
                     ThreadUtil.execAsync(() -> summaryTitle(chatChannel, apiToken));
                 } else {
-                    messagesPanel.removeMessage(user);
-                    messagesPanel.removeMessage(assistant);
-                    AiCopilotDetailsPanel.InputPanel inputPanel = messagesPanel.getAiCopilotChatPanel().getAiCopilotDetailsPanel().getInputPanel();
+                    messageListPanel.removeMessage(user);
+                    messageListPanel.removeMessage(assistant);
+                    AiCopilotDetailsPanel.InputPanel inputPanel = messageListPanel.getAiCopilotChatPanel().getAiCopilotDetailsPanel().getInputPanel();
                     inputPanel.restoreLastText();
                 }
             }
@@ -131,7 +139,7 @@ public class ChatGPTCopilotUtil {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     ChatChannel chatChannel1 = mapper.readValue(data, ChatChannel.class);
-                    assistant.appendContent(chatChannel1.getChoices().get(0).getDelta().getContent());
+                    assistant.appendContent(chatChannel1.getChoices().get(0).getDelta());
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
@@ -156,9 +164,9 @@ public class ChatGPTCopilotUtil {
                 }
                 assistant.loadingEnd();
                 if (!success) {
-                    messagesPanel.getAiCopilotChatPanel().getAiCopilotDetailsPanel().getInputPanel().restoreLastText();
-                    messagesPanel.removeMessage(user);
-                    messagesPanel.removeMessage(assistant);
+                    messageListPanel.getAiCopilotChatPanel().getAiCopilotDetailsPanel().getInputPanel().restoreLastText();
+                    messageListPanel.removeMessage(user);
+                    messageListPanel.removeMessage(assistant);
                 }
                 if (runnable != null) {
                     runnable.run();

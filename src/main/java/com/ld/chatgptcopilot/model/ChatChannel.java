@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.BooleanUtils;
 
 @Tag("chatChannel")
 @Data
@@ -23,10 +24,21 @@ public class ChatChannel {
     private String model;
     private Usage usage;
 
+    private Boolean continuousFlag;
+
     private Boolean stream;
     private List<Choice> choices;
     @XCollection
     private List<Message> messages;
+
+    public void clearOther() {
+        this.setName(null);
+        this.setContinuousFlag(null);
+    }
+
+    public boolean isContinuouing() {
+        return BooleanUtils.isTrue(continuousFlag);
+    }
 
     @Data
     @Builder

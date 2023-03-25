@@ -59,7 +59,7 @@
         <notificationGroup id="ChatGPTCopilot.STICKY_BALLOON" displayType="STICKY_BALLOON"/>
     </extensions>
     <actions>
-        <action id="com.ld.chatgptcopilot.actions.AskChatGPTAction"
+        <action id="ChatGPTCopilot.actions.AskChatGPTAction"
                 class="com.ld.chatgptcopilot.actions.AskChatGPTAction" icon="ChatGPTCopilotIcons.pluginIcon"
                 text="Ask Copilot" description="Ask the ai copilot">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
@@ -71,9 +71,9 @@
                popup="true"
                icon="ChatGPTCopilotIcons.pluginIcon"
                text="Dynamic Action" description="Dynamic action">
-            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="com.ld.chatgptcopilot.actions.AskChatGPTAction"/>
-            <add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="com.ld.chatgptcopilot.actions.AskChatGPTAction"/>
-            <add-to-group group-id="ConsoleView.PopupMenu" anchor="after" relative-to-action="com.ld.chatgptcopilot.actions.AskChatGPTAction"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="ChatGPTCopilot.actions.AskChatGPTAction"/>
+            <add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="ChatGPTCopilot.actions.AskChatGPTAction"/>
+            <add-to-group group-id="ConsoleView.PopupMenu" anchor="after" relative-to-action="ChatGPTCopilot.actions.AskChatGPTAction"/>
         </group>
     </actions>
 </idea-plugin>

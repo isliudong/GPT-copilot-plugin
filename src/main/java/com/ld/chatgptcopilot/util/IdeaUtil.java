@@ -37,6 +37,12 @@ public class IdeaUtil {
         return myBrowser;
     }
 
+    public static TipUIUtil.Browser getMarkdownComponent() {
+        TipUIUtil.Browser myBrowser = TipUIUtil.createBrowser();
+        myBrowser.getComponent().setBorder(JBUI.Borders.empty(0, 10, 8, 10));
+        return myBrowser;
+    }
+
     public static String md2html(String markdown) {
         Document document = Parser.builder().build().parse(markdown);
         String html = HtmlRenderer.builder().build().render(document);

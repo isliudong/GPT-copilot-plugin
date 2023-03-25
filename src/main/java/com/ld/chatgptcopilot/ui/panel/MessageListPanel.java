@@ -13,13 +13,13 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class MessagesPanel extends JBPanel {
+public class MessageListPanel extends JBPanel {
 
     private final List<Message> messageList;
     private final AiCopilotChatPanel aiCopilotChatPanel;
-    private final List<AiCopilotChatPanel.MessageItem> messageItemList=new ArrayList<>();
+    private final List<MessageItemPanel> messageItemList = new ArrayList<>();
 
-    public MessagesPanel(List<Message> messageList, AiCopilotChatPanel aiCopilotChatPanel) {
+    public MessageListPanel(List<Message> messageList, AiCopilotChatPanel aiCopilotChatPanel) {
         super(new BorderLayout());
         this.messageList = messageList;
         this.aiCopilotChatPanel = aiCopilotChatPanel;
@@ -31,19 +31,19 @@ public class MessagesPanel extends JBPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         removeAll();
         messageList.forEach(message -> {
-            AiCopilotChatPanel.MessageItem item = new AiCopilotChatPanel.MessageItem(message,this);
+            MessageItemPanel item = new MessageItemPanel(message, this);
             messageItemList.add(item);
             add(item);
         });
     }
 
-    public void addMessage(AiCopilotChatPanel.MessageItem message){
+    public void addMessage(MessageItemPanel message) {
         messageItemList.add(message);
         messageList.add(message.getMessage());
         add(message);
     }
 
-    public void removeMessage(AiCopilotChatPanel.MessageItem messageItem) {
+    public void removeMessage(MessageItemPanel messageItem) {
         messageList.remove(messageItem.getMessage());
         messageItemList.removeIf(item -> item.getMessage().equals(messageItem.getMessage()));
         remove(messageItem);

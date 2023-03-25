@@ -12,6 +12,9 @@ import java.util.Map;
 import javax.swing.*;
 
 import cn.hutool.core.thread.ThreadUtil;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.ui.Splitter;
@@ -20,6 +23,7 @@ import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextArea;
+import com.ld.chatgptcopilot.actions.ChannelContinuousAction;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.model.Message;
 import com.ld.chatgptcopilot.persistent.ChatGPTCopilotServerManager;
@@ -94,6 +98,12 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
             textArea.setWrapStyleWord(true);
             //移除默认的下边框
             textArea.setBorder(BorderFactory.createEmptyBorder());
+            //设置输入框顶部按钮
+            DefaultActionGroup actionGroup = new DefaultActionGroup();
+            actionGroup.add(new ChannelContinuousAction(chatChannel));
+            JComponent actionsToolbar = createActionsToolbar(actionGroup);
+            add(actionsToolbar);
+
             JBScrollPane scrollPane = new JBScrollPane(textArea);
             scrollPane.setBorder(BorderFactory.createEmptyBorder());
             add(scrollPane);
@@ -124,7 +134,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
                         if (apiToken == null) {
                             return;
                         }
-                        ChatGPTCopilotUtil.postToAiAndUpdateUi(chatPanel.messagesPanel, chatChannel, message, apiToken, () -> scrollToBottom(chatScrollPane));
+                        ChatGPTCopilotUtil.postToAiAndUpdateUi(chatPanel.messageListPanel, chatChannel, message, apiToken, () -> scrollToBottom(chatScrollPane));
                     });
 
 
@@ -158,6 +168,25 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
         //恢复上次输入的内容
         public void restoreLastText() {
             textArea.setText(lastText);
+        }
+
+
+        @NotNull
+        private JComponent createActionsToolbar(DefaultActionGroup actionGroup) {
+            ActionManager actionManager = ActionManager.getInstance();
+            ActionToolbar toolbar = actionManager.createActionToolbar("ld.chat-gpt.toolbar", actionGroup, true);
+            toolbar.setTargetComponent(this);
+
+
+            JPanel panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+            panel.setBackground(textArea.getBackground());
+            panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
+            //GuiUtils.installVisibilityReferent(panel, toolbar.getComponent());
+            JComponent toolbarComponent = toolbar.getComponent();
+            toolbarComponent.setBackground(textArea.getBackground());
+            panel.add(toolbarComponent);
+            return panel;
         }
     }
 
