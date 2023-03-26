@@ -1,7 +1,6 @@
 package com.ld.chatgptcopilot.actions;
 
 import java.awt.*;
-import java.awt.geom.RoundRectangle2D;
 import javax.swing.*;
 
 import cn.hutool.core.thread.ThreadUtil;
@@ -39,6 +38,7 @@ public abstract class AbsChatGetMenuAction extends ChatGPTCopilotComponentAction
         popup.showInBestPositionFor(editor);
 
         ThreadUtil.execAsync(() -> {
+            chatChannel.setContinuousFlag(true);
             ChatGPTCopilotUtil.postToAi(chatChannel, null, apiToken, () -> {
                 JComponent markdownComponent = IdeaUtil.getMarkdownComponent(chatChannel.getLastMessageContent()).getComponent();
                 //创建一个大小合适的面板来显示回复信息
@@ -59,7 +59,7 @@ public abstract class AbsChatGetMenuAction extends ChatGPTCopilotComponentAction
             setOpaque(true);
             int fieldWeight = getSize().width;
             int fieldHeight = getSize().height;
-            setSize(fieldWeight+5, fieldHeight+5);
+            setSize(fieldWeight + 5, fieldHeight + 5);
 
         }
 
@@ -70,7 +70,7 @@ public abstract class AbsChatGetMenuAction extends ChatGPTCopilotComponentAction
             int fieldY = 0;
             int fieldWeight = getSize().width;
             int fieldHeight = getSize().height;
-            Graphics2D g2d=(Graphics2D)g;
+            Graphics2D g2d = (Graphics2D) g;
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g.setColor(getBackground());
             g.fillRoundRect(fieldX, fieldY, fieldWeight, fieldHeight, 20, 20);
