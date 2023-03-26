@@ -30,10 +30,10 @@ public class ChannelContinuousAction extends AnAction implements DumbAware {
         super.update(e);
         if (BooleanUtils.isTrue(chatChannel.getContinuousFlag())) {
             e.getPresentation().setIcon(ChatGPTCopilotIcons.muti_comment_hover);
-            e.getPresentation().setText("Turn Off Continuous Session to Save Token");
+            e.getPresentation().setText("Turn_Off_Continuous_Conversation_to_Save_Tokens");
         } else {
             e.getPresentation().setIcon(ChatGPTCopilotIcons.muti_comment);
-            e.getPresentation().setText("Enable Continuous Session");
+            e.getPresentation().setText("Enable_Continuous_Conversation");
         }
     }
 

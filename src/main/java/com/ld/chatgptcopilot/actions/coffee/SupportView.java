@@ -28,18 +28,23 @@ public class SupportView extends DialogWrapper {
 
     private JLabel alipayLabel;
     private JLabel wechatLabel;
-    private JPanel panel;
     private JPanel buyMeACoffeePanel;
 
     public SupportView() {
         super(false);
         init();
-        setTitle("Thank You For Support !");
+        setTitle("Thank You For Support ! Please Note Your Email or Other Information");
     }
 
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
+        createUIComponents();
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.add(alipayLabel);
+        panel.add(wechatLabel);
+        panel.add(buyMeACoffeePanel);
         return panel;
     }
 
