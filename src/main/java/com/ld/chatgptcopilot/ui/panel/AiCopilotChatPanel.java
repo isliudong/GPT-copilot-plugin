@@ -12,7 +12,9 @@ public class AiCopilotChatPanel extends JBPanel {
     @Getter
     private AiCopilotDetailsPanel aiCopilotDetailsPanel;
     private Project project;
+    @Getter
     private ChatChannel chatChannel;
+    @Getter
     MessageListPanel messageListPanel;
 
     JBPanel loadingPanel = ChatGPTCopilotPanelUtil.createLoadingPanel();

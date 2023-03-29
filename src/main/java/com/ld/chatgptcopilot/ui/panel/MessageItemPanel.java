@@ -49,10 +49,17 @@ public class MessageItemPanel extends JBPanel {
     }
 
     public void loading() {
+        AiCopilotDetailsPanel.InputPanel inputPanel = messageListPanel.getAiCopilotChatPanel().getAiCopilotDetailsPanel().getInputPanel();
+        inputPanel.setText("");
+        inputPanel.button.setEnabled(false);
+        inputPanel.button.setText("Sending...");
         this.add(loadingPanel);
     }
 
-    public void loadingEnd() {
+    public void removeLoading() {
+        AiCopilotDetailsPanel.InputPanel inputPanel = messageListPanel.getAiCopilotChatPanel().getAiCopilotDetailsPanel().getInputPanel();
+        inputPanel.button.setEnabled(true);
+        inputPanel.button.setText("Send");
         this.remove(loadingPanel);
     }
 
@@ -86,14 +93,7 @@ public class MessageItemPanel extends JBPanel {
         String noteBody = message.getContent();
         //按markdown格式解析为html panel
         browser = IdeaUtil.getMarkdownComponent();
-        //用户头像信息，一行固定的html内容
-        String avatar;
-        if (message.isUser()) {
-            avatar = String.format("<div style=\"text-align: right;\">%s</div>", "");
-        } else {
-            avatar = String.format("<div style=\"text-align: left;\">%s</div>", "");
-        }
-        browser.setText(avatar + IdeaUtil.md2html(noteBody));
+        browser.setText(IdeaUtil.md2html(noteBody));
         //使用微软雅黑高亮字体
         browser.getComponent().setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
         //纯白字体，纯黑色背景
@@ -113,19 +113,12 @@ public class MessageItemPanel extends JBPanel {
             return;
         }
 
-        //用户头像信息，一行固定的html内容
-        String avatar;
-        if (message.isUser()) {
-            avatar = String.format("<div style=\"text-align: right;\">%s</div>", "");
-        } else {
-            avatar = String.format("<div style=\"text-align: left;\">%s</div>", "");
-        }
 
         try {
             SwingUtilities.invokeAndWait(() -> {
                 this.message.setContent(collect);
 
-                browser.setText(avatar + IdeaUtil.md2html(collect));
+                browser.setText(IdeaUtil.md2html(collect));
                 browser.getComponent().revalidate();
                 browser.getComponent().repaint();
                 browser.getComponent().updateUI();

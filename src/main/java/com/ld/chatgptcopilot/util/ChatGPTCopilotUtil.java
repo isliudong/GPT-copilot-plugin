@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import javax.swing.*;
+
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.http.HttpRequest;
@@ -18,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.util.text.DateFormatUtil;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.model.Message;
+import com.ld.chatgptcopilot.ui.panel.AiCopilotChatPanel;
 import com.ld.chatgptcopilot.ui.panel.AiCopilotDetailsPanel;
 import com.ld.chatgptcopilot.ui.panel.MessageItemPanel;
 import com.ld.chatgptcopilot.ui.panel.MessageListPanel;
@@ -73,7 +76,7 @@ public class ChatGPTCopilotUtil {
         }
     }
 
-    public static void postToAiAndUpdateUi(MessageListPanel messageListPanel, @NotNull ChatChannel chatChannel, @Nullable Message newMessage, @NotNull String apiToken, @Nullable Runnable runnable) {
+    public static void postToAiAndUpdateUi(AiCopilotChatPanel copilotChatPanel, @NotNull ChatChannel chatChannel, @Nullable Message newMessage, @NotNull String apiToken, @Nullable Runnable runnable) {
         ChatChannel data = ChatChannel.newChannel();
         BeanUtil.copyProperties(chatChannel, data);
 
@@ -101,11 +104,17 @@ public class ChatGPTCopilotUtil {
                 .build();
 
 
+        MessageListPanel messageListPanel = copilotChatPanel.getMessageListPanel();
         MessageItemPanel user = new MessageItemPanel(newMessage, messageListPanel);
         Message assistantMess = new Message("assistant", "");
+        AiCopilotDetailsPanel aiCopilotDetailsPanel = copilotChatPanel.getAiCopilotDetailsPanel();
+        AiCopilotDetailsPanel.InputPanel inputPanel = aiCopilotDetailsPanel.getInputPanel();
         MessageItemPanel assistant = new MessageItemPanel(assistantMess, messageListPanel);
         messageListPanel.addMessage(user);
         messageListPanel.addMessage(assistant);
+        if (runnable != null) {
+            runnable.run();
+        }
         assistant.loading();
 
         EventSourceListener listener = new EventSourceListener() {
@@ -114,14 +123,14 @@ public class ChatGPTCopilotUtil {
             @Override
             public void onClosed(@NotNull EventSource eventSource) {
                 super.onClosed(eventSource);
-                assistant.loadingEnd();
+                assistant.removeLoading();
+                aiCopilotDetailsPanel.removeDownScroller();
                 if (success) {
                     //归纳聊天主题
                     ThreadUtil.execAsync(() -> summaryTitle(chatChannel, apiToken));
                 } else {
                     messageListPanel.removeMessage(user);
                     messageListPanel.removeMessage(assistant);
-                    AiCopilotDetailsPanel.InputPanel inputPanel = messageListPanel.getAiCopilotChatPanel().getAiCopilotDetailsPanel().getInputPanel();
                     inputPanel.restoreLastText();
                 }
             }
@@ -162,7 +171,8 @@ public class ChatGPTCopilotUtil {
                         IdeaUtil.showFailedNotification("AI Copilot is sick：" + e.getMessage());
                     }
                 }
-                assistant.loadingEnd();
+                assistant.removeLoading();
+                aiCopilotDetailsPanel.removeDownScroller();
                 if (!success) {
                     messageListPanel.getAiCopilotChatPanel().getAiCopilotDetailsPanel().getInputPanel().restoreLastText();
                     messageListPanel.removeMessage(user);
@@ -176,7 +186,9 @@ public class ChatGPTCopilotUtil {
             @Override
             public void onOpen(@NotNull EventSource eventSource, @NotNull Response response) {
                 super.onOpen(eventSource, response);
-                assistant.loadingEnd();
+                assistant.removeLoading();
+                aiCopilotDetailsPanel.addDownScroller();
+
             }
         };
 

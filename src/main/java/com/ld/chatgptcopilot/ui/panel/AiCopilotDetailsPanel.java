@@ -39,10 +39,13 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
     private final Project project;
     private final Map<String, Integer> data = new HashMap<>();
 
+    final AdjustmentListener downScroller = e -> e.getAdjustable().setValue(e.getAdjustable().getMaximum());
+
     @Getter
     AiCopilotChatPanel chatPanel;
     @Getter
     InputPanel inputPanel;
+    @Getter
     JScrollPane chatScrollPane;
 
     public AiCopilotDetailsPanel(Project project) {
@@ -82,10 +85,24 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
         scrollPane.getVerticalScrollBar().addAdjustmentListener(downScroller);
     }
 
+    //移除监听器
+    public void removeDownScroller() {
+        chatScrollPane.getVerticalScrollBar().removeAdjustmentListener(downScroller);
+    }
+
+    //添加监听器
+    public void addDownScroller() {
+        chatScrollPane.getVerticalScrollBar().addAdjustmentListener(downScroller);
+    }
+
 
     public class InputPanel extends JBPanel {
 
+        @Getter
         JBTextArea textArea = new JBTextArea();
+        @Getter
+        JButton button = new JButton("Send");
+
         String lastText = "";
 
         public InputPanel(@NotNull ChatChannel chatChannel, AiCopilotChatPanel chatPanel) {
@@ -107,7 +124,6 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
             JBScrollPane scrollPane = new JBScrollPane(textArea);
             scrollPane.setBorder(BorderFactory.createEmptyBorder());
             add(scrollPane);
-            JButton button = new JButton("Send");
 
             //按下ctrl+enter换行，按下enter发送消息
             textArea.addKeyListener(new KeyAdapter() {
@@ -134,7 +150,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
                         if (apiToken == null) {
                             return;
                         }
-                        ChatGPTCopilotUtil.postToAiAndUpdateUi(chatPanel.messageListPanel, chatChannel, message, apiToken, () -> scrollToBottom(chatScrollPane));
+                        ChatGPTCopilotUtil.postToAiAndUpdateUi(chatPanel, chatChannel, message, apiToken, () -> scrollToBottom(chatScrollPane));
                     });
 
 
