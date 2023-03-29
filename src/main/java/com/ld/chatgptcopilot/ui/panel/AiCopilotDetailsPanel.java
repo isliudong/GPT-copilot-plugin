@@ -64,14 +64,21 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
         chatScrollPane = ScrollPaneFactory.createScrollPane(chatPanel);
         //禁止水平滚动
         chatScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        //滚动到底部
-        scrollToBottom(chatScrollPane);
+        //隐藏滚动条, 但是可以滚动
+        chatScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         //分割面板
         Splitter splitter = new Splitter(true, 1f);
         splitter.setFirstComponent(chatScrollPane);
         inputPanel = new InputPanel(chatChannel, chatPanel);
         splitter.setSecondComponent(inputPanel);
         setContent(splitter);
+        //滚动到底部 fixme: 一次直接滚到底部不完全
+        addDownScroller();
+        //移除监听器
+        ThreadUtil.execute(() -> {
+            ThreadUtil.sleep(200);
+            removeDownScroller();
+        });
     }
 
     private void scrollToBottom(JScrollPane scrollPane) {

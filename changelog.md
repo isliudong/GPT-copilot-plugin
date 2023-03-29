@@ -1,3 +1,7 @@
+<h3>0.5.3</h3>
+<p>BugFix: incomplete scrolling of messages</p>
+<p>Feature: Support for discontinuous conversations</p>
+
 <h3>0.4.0</h3>
 <p>Sure, here's a sample release note:
 This release includes fixes for known bugs and improvements to the user experience.
