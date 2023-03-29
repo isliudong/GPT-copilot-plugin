@@ -1,6 +1,5 @@
 package com.ld.chatgptcopilot.actions;
 
-import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAware;
@@ -37,8 +36,9 @@ public class ChannelContinuousAction extends AnAction implements DumbAware {
         }
     }
 
-    @Override
+    //版本不同，ActionUpdateThread 可能不存在
+    /*@Override
     public @NotNull ActionUpdateThread getActionUpdateThread() {
-        return ActionUpdateThread.EDT;
-    }
+        return ActionUpdateThread.BGT;
+    }*/
 }
