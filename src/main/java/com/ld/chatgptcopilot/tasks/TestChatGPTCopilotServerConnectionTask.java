@@ -35,6 +35,7 @@ public class TestChatGPTCopilotServerConnectionTask extends Task.Modal {
             protected void doTest() throws Exception {
                 ChatChannel chatChannel = ChatChannel.newChannel();
                 chatChannel.getMessages().add(Message.builder().role("user").content("hello").build());
+                chatChannel.clearOther();
                 HttpRequest request = HttpRequest.post("https://api.openai.com/v1/chat/completions")
                         .header("Content-Type", "application/json")
                         .header("Authorization", "Bearer " + ChatGPTCopilotServer.getApiToken())

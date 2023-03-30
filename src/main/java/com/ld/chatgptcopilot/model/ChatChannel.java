@@ -24,7 +24,7 @@ public class ChatChannel {
     private String model;
     private Usage usage;
 
-    private Boolean continuousFlag;
+    private Boolean continuousFlag = true;
 
     private Boolean stream;
     private List<Choice> choices;
@@ -36,8 +36,11 @@ public class ChatChannel {
         this.setContinuousFlag(null);
     }
 
-    public boolean isContinuouing() {
+    public boolean isContinuing() {
         return BooleanUtils.isTrue(continuousFlag);
+    }
+    public boolean isNotContinuing() {
+        return BooleanUtils.isNotTrue(continuousFlag);
     }
 
     @Data

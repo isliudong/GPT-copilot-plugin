@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.ld"
-version = "0.5.3"
+version = "0.5.4"
 
 repositories {
     //阿里云仓库
@@ -22,6 +22,8 @@ repositories {
 dependencies {
     implementation("org.projectlombok:lombok:1.18.26")
     annotationProcessor("org.projectlombok:lombok:1.18.26")
+    implementation("com.vladsch.flexmark:flexmark:0.64.0")
+    implementation("com.vladsch.flexmark:flexmark-util:0.64.0")
     implementation("cn.hutool:hutool-all:5.8.15")
     implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")

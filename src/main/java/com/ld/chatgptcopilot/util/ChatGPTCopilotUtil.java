@@ -8,8 +8,6 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-import javax.swing.*;
-
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.http.HttpRequest;
@@ -45,7 +43,7 @@ public class ChatGPTCopilotUtil {
     public static void postToAi(@NotNull ChatChannel chatChannel, @Nullable Message newMessage, @NotNull String apiToken, @Nullable Runnable runnable) {
         ChatChannel data = new ChatChannel();
         BeanUtil.copyProperties(chatChannel, data);
-        if (!chatChannel.isContinuouing()) {
+        if (chatChannel.isNotContinuing()) {
             data.setMessages(new ArrayList<>());
         }
         data.clearOther();
@@ -80,7 +78,7 @@ public class ChatGPTCopilotUtil {
         ChatChannel data = ChatChannel.newChannel();
         BeanUtil.copyProperties(chatChannel, data);
 
-        if (!chatChannel.isContinuouing()) {
+        if (chatChannel.isNotContinuing()) {
             data.setMessages(new ArrayList<>());
         }
         data.clearOther();
