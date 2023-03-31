@@ -146,7 +146,6 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
             });
             button.addActionListener(e -> {
                 String text = textArea.getText();
-                setText("");
                 if (text != null && !text.isEmpty()) {
                     Message message = new Message("user", text);
                     scrollToBottom(chatScrollPane);

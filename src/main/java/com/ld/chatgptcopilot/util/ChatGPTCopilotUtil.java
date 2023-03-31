@@ -159,22 +159,22 @@ public class ChatGPTCopilotUtil {
             public void onFailure(@NotNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
                 super.onFailure(eventSource, t, response);
                 if (t != null) {
-                    IdeaUtil.showFailedNotification("AI Copilot is sick：" + t.getMessage());
+                    IdeaUtil.showFailedNotification("netWork error：" + t.getMessage());
                 }
 
                 if (response != null && response.body() != null) {
                     try {
-                        IdeaUtil.showFailedNotification("AI Copilot is sick：" + response.body().string());
+                        IdeaUtil.showFailedNotification(response.body().string());
                     } catch (IOException e) {
-                        IdeaUtil.showFailedNotification("AI Copilot is sick：" + e.getMessage());
+                        IdeaUtil.showFailedNotification(e.getMessage());
                     }
                 }
                 assistant.removeLoading();
                 aiCopilotDetailsPanel.removeDownScroller();
                 if (!success) {
-                    messageListPanel.getAiCopilotChatPanel().getAiCopilotDetailsPanel().getInputPanel().restoreLastText();
                     messageListPanel.removeMessage(user);
                     messageListPanel.removeMessage(assistant);
+                    inputPanel.restoreLastText();
                 }
                 if (runnable != null) {
                     runnable.run();
