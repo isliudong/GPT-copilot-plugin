@@ -1,3 +1,6 @@
+<h3>0.5.5</h3>
+<p>Feature: Optimize command pop-up interaction, which can be moved, copied, selected, or even opened multiple times at the same time!</p>
+
 <h3>0.5.4</h3>
 <p>BugFix: Fix the FlexMark dependency and find no class. This is a dependency issue for the idea platform, not the plug-in itself</p>
 <p>Feature: Enable continuous sessions by default</p>
