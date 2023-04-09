@@ -4,8 +4,10 @@ import java.awt.*;
 import javax.swing.*;
 
 import cn.hutool.core.thread.ThreadUtil;
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.popup.IconButton;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.ui.components.JBPanel;
@@ -18,6 +20,7 @@ import com.ld.chatgptcopilot.ui.panel.AiCopilotPanel;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotPanelUtil;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotUtil;
 import com.ld.chatgptcopilot.util.IdeaUtil;
+import icons.ChatGPTCopilotIcons;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbsChatGetMenuAction extends ChatGPTCopilotComponentAction<AiCopilotPanel> {
@@ -33,7 +36,14 @@ public abstract class AbsChatGetMenuAction extends ChatGPTCopilotComponentAction
         loadingPanel.setPreferredSize(new Dimension(300, 500));
         jbPanelJBPanel.add(loadingPanel, BorderLayout.CENTER);
         JBPopup popup = JBPopupFactory.getInstance()
-                .createComponentPopupBuilder(jbPanelJBPanel, null)
+                .createComponentPopupBuilder(jbPanelJBPanel, jbPanelJBPanel)
+                .setMovable(true)
+                .setResizable(true)
+                .setShowShadow(true)
+                .setRequestFocus(true)
+                .setCancelOnClickOutside(false)
+                .setCancelKeyEnabled(true)
+                .setCancelButton(new IconButton("Close", AllIcons.Actions.Close))
                 .createPopup();
         popup.showInBestPositionFor(editor);
 
