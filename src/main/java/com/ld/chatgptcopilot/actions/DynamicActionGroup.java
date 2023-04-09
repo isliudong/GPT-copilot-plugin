@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 public class DynamicActionGroup extends ActionGroup {
     public final List<String> defaultActionsCommend = new ArrayList<>(Arrays
             .asList(MyResourceBundleUtil.getKey("explain"),
-            MyResourceBundleUtil.getKey("translate_to_chinese"),
+                    MyResourceBundleUtil.getKey("translate_to_chinese"),
                     MyResourceBundleUtil.getKey("translate_to_english"),
                     MyResourceBundleUtil.getKey("check_bugs"),
                     MyResourceBundleUtil.getKey("optimize_code")));
@@ -75,8 +75,8 @@ public class DynamicActionGroup extends ActionGroup {
             }
             String selectedText = editor.getSelectionModel().getSelectedText();
             ChatChannel chatChannel = ChatChannel.newChannel();
-            Message message1 = Message.builder().role("user").content(commend + ":").build();
-            Message message2 = Message.builder().role("user").content(selectedText).build();
+            Message message1 = new Message("user", commend + ":");
+            Message message2 = new Message("user", selectedText);
             chatChannel.getMessages().add(message1);
             chatChannel.getMessages().add(message2);
             askCopilot(project, e.getRequiredData(CommonDataKeys.EDITOR), chatChannel);

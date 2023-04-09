@@ -54,8 +54,8 @@ public class AiCopilotPanel extends SimpleToolWindowPanel {
         detailsPanel = new AiCopilotDetailsPanel(project);
         List<ChatChannel> chatChannels = channelManager.getChatChannels();
         List<ChatChannel> list = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(chatChannels)){
-            for (int i = chatChannels.size()-1; i >=0; i--) {
+        if (CollectionUtils.isNotEmpty(chatChannels)) {
+            for (int i = chatChannels.size() - 1; i >= 0; i--) {
                 list.add(chatChannels.get(i));
             }
         }
@@ -67,18 +67,19 @@ public class AiCopilotPanel extends SimpleToolWindowPanel {
                     if (event.getValueIsAdjusting()) {
                         return;
                     }
-                    this.detailsPanel.showChannel(copilotListTableView.getSelectedObject());
+                    this.detailsPanel.showChannel(copilotListTableView.getSelectedObject(), channelManager.getState().newUI);
                 });
 
 
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(JBUI.Borders.customLine(JBColor.border(), 0, 0, 0, 1));
+        JPanel channelListPanel = new JPanel(new BorderLayout());
+        channelListPanel.setMinimumSize(new Dimension(100, 0));
+        channelListPanel.setBorder(JBUI.Borders.customLine(JBColor.border(), 0, 0, 0, 1));
         JScrollPane scrollPane = ScrollPaneFactory.createScrollPane(copilotListTableView);
-        panel.add(scrollPane, BorderLayout.CENTER);
+        channelListPanel.add(scrollPane, BorderLayout.CENTER);
 
         JBSplitter splitter = new JBSplitter();
         splitter.setProportion(0.4f);
-        splitter.setFirstComponent(panel);
+        splitter.setFirstComponent(channelListPanel);
         splitter.setSecondComponent(detailsPanel);
         splitter.setShowDividerIcon(false);
         splitter.setDividerWidth(1);
@@ -112,7 +113,7 @@ public class AiCopilotPanel extends SimpleToolWindowPanel {
             if (nonNull(copilotListTableView)) {
                 copilotListTableView.getModel().insertRow(0, chatChannel);
                 copilotListTableView.addSelection(chatChannel);
-                detailsPanel.showChannel(copilotListTableView.getSelectedObject());
+                detailsPanel.showChannel(copilotListTableView.getSelectedObject(), channelManager.getState().newUI);
                 channelManager.add(chatChannel);
             }
         });
@@ -127,7 +128,7 @@ public class AiCopilotPanel extends SimpleToolWindowPanel {
                     return;
                 }
                 copilotListTableView.getModel().removeRow(copilotListTableView.getModel().indexOf(chatChannel));
-                detailsPanel.showChannel(copilotListTableView.getSelectedObject());
+                detailsPanel.showChannel(copilotListTableView.getSelectedObject(), channelManager.getState().newUI);
                 channelManager.delete(chatChannel);
             }
         });

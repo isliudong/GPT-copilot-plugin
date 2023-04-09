@@ -34,7 +34,7 @@ public class TestChatGPTCopilotServerConnectionTask extends Task.Modal {
         this.connection = new TaskRepository.CancellableConnection() {
             protected void doTest() throws Exception {
                 ChatChannel chatChannel = ChatChannel.newChannel();
-                chatChannel.getMessages().add(Message.builder().role("user").content("hello").build());
+                chatChannel.getMessages().add(new Message("user", "hello"));
                 chatChannel.clearOther();
                 HttpRequest request = HttpRequest.post("https://api.openai.com/v1/chat/completions")
                         .header("Content-Type", "application/json")

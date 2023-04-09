@@ -60,6 +60,7 @@ public class ChatGPTCopilotChannelManager implements PersistentStateComponent<Ch
 
     @Data
     public static class State {
+        public Boolean newUI = false;
         @XCollection(propertyElementName = "dynamicCommends")
         public List<String> dynamicCommends = new ArrayList<>();
         @XCollection(propertyElementName = "chatChannels")

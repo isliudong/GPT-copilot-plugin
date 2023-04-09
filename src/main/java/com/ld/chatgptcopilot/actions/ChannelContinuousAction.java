@@ -3,8 +3,10 @@ package com.ld.chatgptcopilot.actions;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAware;
+import com.intellij.util.ui.UIUtil;
 import com.ld.chatgptcopilot.commen.ActionProperties;
 import com.ld.chatgptcopilot.model.ChatChannel;
+import com.ld.chatgptcopilot.util.MyResourceBundleUtil;
 import icons.ChatGPTCopilotIcons;
 import org.apache.commons.lang3.BooleanUtils;
 import org.jetbrains.annotations.NotNull;
@@ -28,11 +30,19 @@ public class ChannelContinuousAction extends AnAction implements DumbAware {
     public void update(@NotNull AnActionEvent e) {
         super.update(e);
         if (BooleanUtils.isTrue(chatChannel.getContinuousFlag())) {
-            e.getPresentation().setIcon(ChatGPTCopilotIcons.muti_comment_hover);
-            e.getPresentation().setText("Turn_Off_Continuous_Conversation_to_Save_Tokens");
+            if (UIUtil.isUnderDarcula()) {
+                e.getPresentation().setIcon(ChatGPTCopilotIcons.muti_comment_hover);
+            } else {
+                e.getPresentation().setIcon(ChatGPTCopilotIcons.muti_comment);
+            }
+            e.getPresentation().setText(MyResourceBundleUtil.getKey("Turn_Off_Continuous_Conversation_to_Save_Tokens"));
         } else {
-            e.getPresentation().setIcon(ChatGPTCopilotIcons.muti_comment);
-            e.getPresentation().setText("Enable_Continuous_Conversation");
+            if (UIUtil.isUnderDarcula()) {
+                e.getPresentation().setIcon(ChatGPTCopilotIcons.muti_comment);
+            } else {
+                e.getPresentation().setIcon(ChatGPTCopilotIcons.muti_comment_hover);
+            }
+            e.getPresentation().setText(MyResourceBundleUtil.getKey("Enable_Continuous_Conversation"));
         }
     }
 
