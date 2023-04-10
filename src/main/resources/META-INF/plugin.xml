@@ -53,7 +53,7 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="ChatGPT Copilot" anchor="bottom" icon="/icons/chatGPT-copilot-logo-square.svg"
+        <toolWindow id="ChatGPT Copilot" anchor="left" icon="/icons/chatGPT-copilot-logo-square.svg"
                     factoryClass="com.ld.chatgptcopilot.ui.ChatGPTCopilotToolWindowFactory"/>
         <notificationGroup id="ChatGPTCopilot.BALLOON" displayType="BALLOON"/>
         <notificationGroup id="ChatGPTCopilot.STICKY_BALLOON" displayType="STICKY_BALLOON"/>
