@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.ld"
-version = "0.5.6"
+version = "0.6.0"
 
 repositories {
     //阿里云仓库
@@ -21,6 +21,8 @@ repositories {
 //依赖
 dependencies {
     implementation("org.projectlombok:lombok:1.18.26")
+    implementation("com.vladsch.flexmark:flexmark-all:0.64.0")
+    implementation("org.apache.commons:commons-text:1.10.0")
     annotationProcessor("org.projectlombok:lombok:1.18.26")
     implementation("com.vladsch.flexmark:flexmark:0.64.0")
     implementation("com.vladsch.flexmark:flexmark-util:0.64.0")
@@ -34,8 +36,8 @@ dependencies {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2022.3")
-    type.set("IC") // Target IDE Platform
+    version.set("2023.1")
+    type.set("IU") // Target IDE Platform
     plugins.set(listOf("tasks", "markdown"))
 }
 

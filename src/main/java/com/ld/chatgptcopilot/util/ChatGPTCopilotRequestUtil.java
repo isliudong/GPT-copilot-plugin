@@ -18,10 +18,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.util.text.DateFormatUtil;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.model.Message;
+import com.ld.chatgptcopilot.ui.panel.AbstractChatDisplayPanel;
 import com.ld.chatgptcopilot.ui.panel.AiCopilotChatPanel;
 import com.ld.chatgptcopilot.ui.panel.AiCopilotDetailsPanel;
-import com.ld.chatgptcopilot.ui.panel.MessageItemPanel;
-import com.ld.chatgptcopilot.ui.panel.MessageListPanel;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -33,7 +32,7 @@ import okhttp3.sse.EventSources;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ChatGPTCopilotUtil {
+public class ChatGPTCopilotRequestUtil {
     private static final Pattern BODY_NAME_PATTERN = Pattern.compile("(\\[~(\\w+)])");
 
     public static String getPrettyDateTime(Date date) {
@@ -48,7 +47,10 @@ public class ChatGPTCopilotUtil {
         }
         data.clearOther();
         if (newMessage != null) {
-            data.getMessages().add(newMessage);
+            Message messageData = new Message();
+            BeanUtil.copyProperties(newMessage, messageData);
+            messageData.clearOther();
+            data.getMessages().add(messageData);
         }
 
         HttpRequest request = HttpRequest.post("https://api.openai.com/v1/chat/completions")
@@ -70,7 +72,7 @@ public class ChatGPTCopilotUtil {
             ThreadUtil.execAsync(() -> summaryTitle(chatChannel, apiToken));
 
         } catch (Exception e) {
-            IdeaUtil.showFailedNotification("AI Copilot is sick：" + e.getMessage());
+            ChatGPTCopilotCommonUtil.showFailedNotification("AI Copilot is sick：" + e.getMessage());
         }
     }
 
@@ -84,7 +86,10 @@ public class ChatGPTCopilotUtil {
         data.clearOther();
         data.setStream(true);
         if (newMessage != null) {
-            data.getMessages().add(newMessage);
+            Message messageData = new Message();
+            BeanUtil.copyProperties(newMessage, messageData);
+            messageData.clearOther();
+            data.getMessages().add(messageData);
         }
         //使用OkHttp的EventSourceListener实时接收AI Copilot的回复
         Request request = new Request.Builder()
@@ -102,40 +107,45 @@ public class ChatGPTCopilotUtil {
                 .build();
 
 
-        MessageListPanel messageListPanel = copilotChatPanel.getMessageListPanel();
-        MessageItemPanel user = new MessageItemPanel(newMessage, messageListPanel);
         Message assistantMess = new Message("assistant", "");
         AiCopilotDetailsPanel aiCopilotDetailsPanel = copilotChatPanel.getAiCopilotDetailsPanel();
         AiCopilotDetailsPanel.InputPanel inputPanel = aiCopilotDetailsPanel.getInputPanel();
-        MessageItemPanel assistant = new MessageItemPanel(assistantMess, messageListPanel);
-        messageListPanel.addMessage(user);
-        messageListPanel.addMessage(assistant);
+
+        AbstractChatDisplayPanel messageListPanel = copilotChatPanel.getMessageListPanel();
+
+
+        messageListPanel.addMessage(newMessage);
+        messageListPanel.addMessage(assistantMess);
+        messageListPanel.loading(assistantMess);
+
+
         if (runnable != null) {
             runnable.run();
         }
-        assistant.loading();
 
         EventSourceListener listener = new EventSourceListener() {
             private boolean success = false;
+            private boolean newContent = true;
 
             @Override
             public void onClosed(@NotNull EventSource eventSource) {
                 super.onClosed(eventSource);
-                assistant.removeLoading();
+                messageListPanel.removeLoading();
                 aiCopilotDetailsPanel.removeDownScroller();
                 if (success) {
+                    messageListPanel.appendMessage(assistantMess);
                     //归纳聊天主题
                     ThreadUtil.execAsync(() -> summaryTitle(chatChannel, apiToken));
                 } else {
-                    messageListPanel.removeMessage(user);
-                    messageListPanel.removeMessage(assistant);
+                    messageListPanel.removeMessage(newMessage);
+                    messageListPanel.removeMessage(assistantMess);
                     inputPanel.restoreLastText();
                 }
             }
 
             @Override
             public void onEvent(@NotNull EventSource eventSource, @Nullable String id, @Nullable String type, @NotNull String data) {
-                System.out.println(data);
+                System.out.println(new Date() + data);
                 super.onEvent(eventSource, id, type, data);
 
                 if ("[DONE]".equals(data)) {
@@ -146,9 +156,18 @@ public class ChatGPTCopilotUtil {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     ChatChannel chatChannel1 = mapper.readValue(data, ChatChannel.class);
-                    assistant.appendContent(chatChannel1.getChoices().get(0).getDelta());
+                    Message delta = chatChannel1.getChoices().get(0).getDelta();
+                    if (delta.getContent() != null) {
+                        assistantMess.setContent(assistantMess.getContent() + delta.getContent());
+                    }
+                    messageListPanel.appendContent(assistantMess, newContent);
+                    newContent = false;
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
+                    ChatGPTCopilotCommonUtil.showFailedNotification(data);
+                    messageListPanel.removeMessage(newMessage);
+                    messageListPanel.removeMessage(assistantMess);
+                    inputPanel.restoreLastText();
                 }
                 if (runnable != null) {
                     runnable.run();
@@ -159,21 +178,21 @@ public class ChatGPTCopilotUtil {
             public void onFailure(@NotNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
                 super.onFailure(eventSource, t, response);
                 if (t != null) {
-                    IdeaUtil.showFailedNotification("netWork error：" + t.getMessage());
+                    ChatGPTCopilotCommonUtil.showFailedNotification("netWork error：" + t.getMessage());
                 }
 
                 if (response != null && response.body() != null) {
                     try {
-                        IdeaUtil.showFailedNotification(response.body().string());
+                        ChatGPTCopilotCommonUtil.showFailedNotification(response.body().string());
                     } catch (IOException e) {
-                        IdeaUtil.showFailedNotification(e.getMessage());
+                        ChatGPTCopilotCommonUtil.showFailedNotification(e.getMessage());
                     }
                 }
-                assistant.removeLoading();
+                messageListPanel.removeLoading();
                 aiCopilotDetailsPanel.removeDownScroller();
                 if (!success) {
-                    messageListPanel.removeMessage(user);
-                    messageListPanel.removeMessage(assistant);
+                    messageListPanel.removeMessage(newMessage);
+                    messageListPanel.removeMessage(assistantMess);
                     inputPanel.restoreLastText();
                 }
                 if (runnable != null) {
@@ -184,7 +203,7 @@ public class ChatGPTCopilotUtil {
             @Override
             public void onOpen(@NotNull EventSource eventSource, @NotNull Response response) {
                 super.onOpen(eventSource, response);
-                assistant.removeLoading();
+                messageListPanel.removeLoading();
                 aiCopilotDetailsPanel.addDownScroller();
 
             }

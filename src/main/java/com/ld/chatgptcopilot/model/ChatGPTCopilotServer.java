@@ -9,8 +9,8 @@ import com.intellij.util.xmlb.annotations.Attribute;
 import com.intellij.util.xmlb.annotations.Tag;
 import com.intellij.util.xmlb.annotations.Transient;
 import com.ld.chatgptcopilot.server.auth.AuthType;
-import com.ld.chatgptcopilot.util.IdeaUtil;
-import com.ld.chatgptcopilot.util.PasswordUtil;
+import com.ld.chatgptcopilot.util.ChatGPTCopilotCommonUtil;
+import com.ld.chatgptcopilot.util.ChatGPTCopilotPasswordUtil;
 import org.jetbrains.annotations.NotNull;
 
 @Tag("ChatGPTCopilotServer")
@@ -92,14 +92,14 @@ public class ChatGPTCopilotServer {
 
     @Attribute("password")
     public String getEncodedPassword() {
-        return PasswordUtil.encodePassword(this.getPassword());
+        return ChatGPTCopilotPasswordUtil.encodePassword(this.getPassword());
     }
 
     public void setEncodedPassword(String password) {
         try {
-            this.setPassword(PasswordUtil.decodePassword(password));
+            this.setPassword(ChatGPTCopilotPasswordUtil.decodePassword(password));
         } catch (Exception e) {
-            IdeaUtil.showFailedNotification("ChatGPTCopilot token error");
+            ChatGPTCopilotCommonUtil.showFailedNotification("ChatGPTCopilot token error");
         }
     }
 
@@ -119,14 +119,14 @@ public class ChatGPTCopilotServer {
 
     @Attribute("apiToken")
     public String getEncodedApiToken() {
-        return PasswordUtil.encodePassword(this.getApiToken());
+        return ChatGPTCopilotPasswordUtil.encodePassword(this.getApiToken());
     }
 
     public void setEncodedApiToken(String apiToken) {
         try {
-            this.setApiToken(PasswordUtil.decodePassword(apiToken));
+            this.setApiToken(ChatGPTCopilotPasswordUtil.decodePassword(apiToken));
         } catch (NumberFormatException var3) {
-            IdeaUtil.showFailedNotification("ChatGPTCopilot token error");
+            ChatGPTCopilotCommonUtil.showFailedNotification("ChatGPTCopilot token error");
         }
     }
 

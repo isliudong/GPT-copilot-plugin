@@ -11,28 +11,38 @@ import lombok.Getter;
 public class AiCopilotChatPanel extends JBPanel {
     @Getter
     private AiCopilotDetailsPanel aiCopilotDetailsPanel;
+    private boolean newUI;
     private Project project;
     @Getter
     private ChatChannel chatChannel;
     @Getter
-    MessageListPanel messageListPanel;
+    AbstractChatDisplayPanel messageListPanel;
 
     JBPanel loadingPanel = ChatGPTCopilotPanelUtil.createLoadingPanel();
 
 
-    public AiCopilotChatPanel(ChatChannel chatChannel, Project project, AiCopilotDetailsPanel aiCopilotDetailsPanel) {
+    public AiCopilotChatPanel(ChatChannel chatChannel, Project project, AiCopilotDetailsPanel aiCopilotDetailsPanel, boolean newUI) {
         this.chatChannel = chatChannel;
         this.project = project;
         this.aiCopilotDetailsPanel = aiCopilotDetailsPanel;
-        messageListPanel = new MessageListPanel(chatChannel.getMessages(), this);
+        this.newUI = newUI;
         setContent();
     }
 
-    private void setContent() {
+    public void refreshContent(boolean newUI) {
+        if (this.newUI == newUI) {
+            return;
+        }
+        this.newUI = newUI;
+        setContent();
+    }
+
+    public void setContent() {
+        removeAll();
         setLayout(new BorderLayout());
+        messageListPanel = newUI ? new HtmlMessageListDisplayPanel(project, chatChannel, this) : new MessageListDisplayPanel(project, chatChannel, this);
         add(messageListPanel, BorderLayout.CENTER);
-        //内容空白区域弹性填充
-        //add(Box.createVerticalGlue(), BorderLayout.CENTER);
+        updateUI();
     }
 
 

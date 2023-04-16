@@ -30,9 +30,9 @@ import com.ld.chatgptcopilot.model.ChatGPTCopilotServer;
 import com.ld.chatgptcopilot.persistent.ChatGPTCopilotServerManager;
 import com.ld.chatgptcopilot.server.auth.AuthType;
 import com.ld.chatgptcopilot.server.editor.ChatGPTCopilotServerEditor;
+import com.ld.chatgptcopilot.util.ChatGPTCopilotMessageBundleUtil;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotPanelUtil;
-import com.ld.chatgptcopilot.util.MyResourceBundleUtil;
-import com.ld.chatgptcopilot.util.SimpleSelectableList;
+import com.ld.chatgptcopilot.ui.compont.SimpleSelectableList;
 import icons.ChatGPTCopilotIcons;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -95,7 +95,7 @@ public class ConfigureChatGptDialog extends DialogWrapper {
 
 
         serversList = new JBList();
-        serversList.setEmptyText(MyResourceBundleUtil.getKey("No_servers"));
+        serversList.setEmptyText(ChatGPTCopilotMessageBundleUtil.getKey("No_servers"));
         serversList.setModel(listModel);
         serversList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -116,7 +116,7 @@ public class ConfigureChatGptDialog extends DialogWrapper {
             }
         });
 
-        setTitle(MyResourceBundleUtil.getKey("Configure_Servers"));
+        setTitle(ChatGPTCopilotMessageBundleUtil.getKey("Configure_Servers"));
         super.init();
     }
 
@@ -148,21 +148,21 @@ public class ConfigureChatGptDialog extends DialogWrapper {
 
         for (ChatGPTCopilotServer server : servers) {
             if (StringUtils.isBlank(server.getName())) {
-                Messages.showErrorDialog(MyResourceBundleUtil.getKey("Server_url_is_required"), MyResourceBundleUtil.getKey("Error"));
+                Messages.showErrorDialog(ChatGPTCopilotMessageBundleUtil.getKey("Server_url_is_required"), ChatGPTCopilotMessageBundleUtil.getKey("Error"));
                 return false;
             }
             if (AuthType.USER_PASS.equals(server.getType())) {
                 if (StringUtils.isBlank(server.getUsername())) {
-                    Messages.showErrorDialog(MyResourceBundleUtil.getKey("Username_is_required"), MyResourceBundleUtil.getKey("Error"));
+                    Messages.showErrorDialog(ChatGPTCopilotMessageBundleUtil.getKey("Username_is_required"), ChatGPTCopilotMessageBundleUtil.getKey("Error"));
                     return false;
                 }
                 if (StringUtils.isBlank(server.getPassword())) {
-                    Messages.showErrorDialog(MyResourceBundleUtil.getKey("Password_is_required"), MyResourceBundleUtil.getKey("Error"));
+                    Messages.showErrorDialog(ChatGPTCopilotMessageBundleUtil.getKey("Password_is_required"), ChatGPTCopilotMessageBundleUtil.getKey("Error"));
                     return false;
                 }
             } else if (AuthType.API_TOKEN.equals(server.getType())) {
                 if (StringUtils.isBlank(server.getApiToken())) {
-                    Messages.showErrorDialog(MyResourceBundleUtil.getKey("Personal_Access_Token_is_required"), MyResourceBundleUtil.getKey("Error"));
+                    Messages.showErrorDialog(ChatGPTCopilotMessageBundleUtil.getKey("Personal_Access_Token_is_required"), ChatGPTCopilotMessageBundleUtil.getKey("Error"));
                     return false;
                 }
             }

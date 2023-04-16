@@ -1,3 +1,16 @@
+<h3>0.6.0</h3>
+<p>Feature: Funky code highlighting</p>
+<p>Feature: New UI with option to switch to original UI</p>
+<p>Feature: Delete chat history with ease</p>
+<p>Feature: Copy and replace selected text, or insert code at cursor with a simple click</p>
+<p>Feature: Cursor blinking animation - because elegance never goes out of style</p>
+
+<p>Feature: 代码高亮</p>
+<p>Feature: 全新UI，支持切换原始UI</p>
+<p>Feature: 聊天记录支持清空</p>
+<p>Feature: 一键代码拷贝、一键替换当前选中文本或在光标位置处插入代码</p>
+<p>Feature: AI回复光标闪烁动画，优雅永不过时</p>
+
 <h3>0.5.5</h3>
 <p>Feature: Optimize command pop-up interaction, which can be moved, copied, selected, or even opened multiple times at the same time!</p>
 

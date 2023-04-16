@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.intellij.util.xmlb.annotations.Tag;
+import com.intellij.util.xmlb.annotations.Transient;
 import com.intellij.util.xmlb.annotations.XCollection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 
 @Tag("chatChannel")
@@ -23,7 +25,10 @@ public class ChatChannel {
     private Long created;
     private String model;
     private Usage usage;
+    @Transient
+    private String html;
 
+    @Builder.Default
     private Boolean continuousFlag = true;
 
     private Boolean stream;
@@ -33,12 +38,17 @@ public class ChatChannel {
 
     public void clearOther() {
         this.setName(null);
+        this.setHtml(null);
         this.setContinuousFlag(null);
+        if (CollectionUtils.isNotEmpty(messages)) {
+            messages.forEach(Message::clearOther);
+        }
     }
 
     public boolean isContinuing() {
         return BooleanUtils.isTrue(continuousFlag);
     }
+
     public boolean isNotContinuing() {
         return BooleanUtils.isNotTrue(continuousFlag);
     }

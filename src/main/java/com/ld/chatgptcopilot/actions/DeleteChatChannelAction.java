@@ -21,4 +21,5 @@ public class DeleteChatChannelAction extends ChatGPTCopilotComponentAction<AiCop
         Optional.ofNullable(getComponent())
                 .ifPresent(AiCopilotPanel::deleteSelectedChannel);
     }
+
 }

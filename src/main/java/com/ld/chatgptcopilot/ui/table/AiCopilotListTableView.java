@@ -22,9 +22,8 @@ public class AiCopilotListTableView extends TableView<ChatChannel> {
         setSelectionMode(SINGLE_SELECTION);
         setIntercellSpacing(new Dimension());
         setShowGrid(false);
-        //不显示表头
         setTableHeader(null);
-        //setRowHeight(100);
+        setRowHeight(25);
     }
 
 

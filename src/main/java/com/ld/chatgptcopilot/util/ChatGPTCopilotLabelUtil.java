@@ -28,6 +28,7 @@ public class ChatGPTCopilotLabelUtil {
     public static final Color LINK_COLOR = JBColor.BLUE;
 
     public static final Color DACULA_DEFAULT_COLOR = new Color(60, 63, 65);
+    public static final Color DEFAULT_COLOR = new Color(255, 255, 255);
 
     public static final Color DEFAULT_ISSUE_COLOR = new Color(211, 232, 240);
     public static final Color DEFAULT_SELECTED_ISSUE_COLOR = new Color(26, 125, 196);
@@ -114,7 +115,7 @@ public class ChatGPTCopilotLabelUtil {
     }
 
     public static Color getBgRowColor() {
-        return UIUtil.isUnderDarcula() ? DACULA_DEFAULT_COLOR : DEFAULT_ISSUE_COLOR;
+        return UIUtil.isUnderDarcula() ? DACULA_DEFAULT_COLOR : DEFAULT_COLOR;
     }
 
     public static Color getFgRowColor() {

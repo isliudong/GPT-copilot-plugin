@@ -6,12 +6,8 @@ import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.swing.*;
 
-import com.intellij.ide.util.TipUIUtil;
 import com.intellij.ui.Gray;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBPanel;
@@ -19,8 +15,9 @@ import com.intellij.util.ui.HtmlPanel;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
 import com.ld.chatgptcopilot.model.Message;
+import com.ld.chatgptcopilot.util.ChatGPTCopilotCommonUtil;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotPanelUtil;
-import com.ld.chatgptcopilot.util.IdeaUtil;
+import com.ld.chatgptcopilot.util.ChatTipUIUtil;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nls;
@@ -30,26 +27,26 @@ public class MessageItemPanel extends JBPanel {
     @Getter
     private final Message message;
     @Getter
-    private final MessageListPanel messageListPanel;
+    private final MessageListDisplayPanel messageListDisplayPanel;
     @Getter
     private MessageHtmlPanel htmlPanel;
     @Getter
-    private TipUIUtil.Browser browser;
+    private ChatTipUIUtil.Browser browser;
 
     JBPanel loadingPanel = ChatGPTCopilotPanelUtil.createLoadingPanel();
 
 
     private List<Runnable> refreshListeners = new ArrayList<>();
 
-    public MessageItemPanel(Message message, MessageListPanel messageListPanel) {
+    public MessageItemPanel(Message message, MessageListDisplayPanel messageListDisplayPanel) {
         this.message = message;
-        this.messageListPanel = messageListPanel;
+        this.messageListDisplayPanel = messageListDisplayPanel;
         initUi();
         addComponentHover(this);
     }
 
     public void loading() {
-        AiCopilotDetailsPanel.InputPanel inputPanel = messageListPanel.getAiCopilotChatPanel().getAiCopilotDetailsPanel().getInputPanel();
+        AiCopilotDetailsPanel.InputPanel inputPanel = messageListDisplayPanel.getAiCopilotChatPanel().getAiCopilotDetailsPanel().getInputPanel();
         inputPanel.setText("");
         inputPanel.button.setEnabled(false);
         inputPanel.button.setText("Sending...");
@@ -57,7 +54,7 @@ public class MessageItemPanel extends JBPanel {
     }
 
     public void removeLoading() {
-        AiCopilotDetailsPanel.InputPanel inputPanel = messageListPanel.getAiCopilotChatPanel().getAiCopilotDetailsPanel().getInputPanel();
+        AiCopilotDetailsPanel.InputPanel inputPanel = messageListDisplayPanel.getAiCopilotChatPanel().getAiCopilotDetailsPanel().getInputPanel();
         inputPanel.button.setEnabled(true);
         inputPanel.button.setText("Send");
         this.remove(loadingPanel);
@@ -92,8 +89,8 @@ public class MessageItemPanel extends JBPanel {
 
         String noteBody = message.getContent();
         //按markdown格式解析为html panel
-        browser = IdeaUtil.getMarkdownComponent();
-        browser.setText(IdeaUtil.md2html(noteBody));
+        browser = ChatGPTCopilotCommonUtil.getHtmlPanel();
+        browser.setText(ChatGPTCopilotCommonUtil.md2html(noteBody));
         //使用微软雅黑高亮字体
         browser.getComponent().setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
         //纯白字体，纯黑色背景
@@ -107,18 +104,10 @@ public class MessageItemPanel extends JBPanel {
     }
 
     //更新内容
-    public void appendContent(Message message) {
-        String collect = Stream.of(this.message.getContent(), message.getContent()).filter(Objects::nonNull).collect(Collectors.joining());
-        if (StringUtils.isBlank(collect)) {
-            return;
-        }
-
-
+    public void appendContent() {
         try {
             SwingUtilities.invokeAndWait(() -> {
-                this.message.setContent(collect);
-
-                browser.setText(IdeaUtil.md2html(collect));
+                browser.setText(ChatGPTCopilotCommonUtil.md2html(this.message.getContent()));
                 browser.getComponent().revalidate();
                 browser.getComponent().repaint();
                 browser.getComponent().updateUI();
@@ -128,16 +117,16 @@ public class MessageItemPanel extends JBPanel {
                 this.repaint();
                 this.updateUI();
 
-                messageListPanel.revalidate();
-                messageListPanel.repaint();
-                messageListPanel.updateUI();
+                messageListDisplayPanel.revalidate();
+                messageListDisplayPanel.repaint();
+                messageListDisplayPanel.updateUI();
 
-                messageListPanel.getParent().revalidate();
-                messageListPanel.getParent().repaint();
+                messageListDisplayPanel.getParent().revalidate();
+                messageListDisplayPanel.getParent().repaint();
             });
         } catch (InterruptedException | InvocationTargetException e) {
             e.printStackTrace();
-            IdeaUtil.showFailedNotification(e.getMessage());
+            ChatGPTCopilotCommonUtil.showFailedNotification(e.getMessage());
         }
         refreshListeners.forEach(Runnable::run);
     }

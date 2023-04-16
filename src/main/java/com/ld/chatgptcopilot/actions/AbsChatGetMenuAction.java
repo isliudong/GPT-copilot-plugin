@@ -18,9 +18,8 @@ import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.persistent.ChatGPTCopilotServerManager;
 import com.ld.chatgptcopilot.ui.panel.AiCopilotPanel;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotPanelUtil;
-import com.ld.chatgptcopilot.util.ChatGPTCopilotUtil;
-import com.ld.chatgptcopilot.util.IdeaUtil;
-import icons.ChatGPTCopilotIcons;
+import com.ld.chatgptcopilot.util.ChatGPTCopilotRequestUtil;
+import com.ld.chatgptcopilot.util.ChatGPTCopilotCommonUtil;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbsChatGetMenuAction extends ChatGPTCopilotComponentAction<AiCopilotPanel> {
@@ -49,8 +48,8 @@ public abstract class AbsChatGetMenuAction extends ChatGPTCopilotComponentAction
 
         ThreadUtil.execAsync(() -> {
             chatChannel.setContinuousFlag(true);
-            ChatGPTCopilotUtil.postToAi(chatChannel, null, apiToken, () -> {
-                JComponent markdownComponent = IdeaUtil.getMarkdownComponent(chatChannel.getLastMessageContent()).getComponent();
+            ChatGPTCopilotRequestUtil.postToAi(chatChannel, null, apiToken, () -> {
+                JComponent markdownComponent = ChatGPTCopilotCommonUtil.getHtmlPanel(chatChannel.getLastMessageContent()).getComponent();
                 //创建一个大小合适的面板来显示回复信息
                 SwingUtilities.invokeLater(() -> {
                     JBScrollPane jbScrollPane = new JBScrollPane(markdownComponent);

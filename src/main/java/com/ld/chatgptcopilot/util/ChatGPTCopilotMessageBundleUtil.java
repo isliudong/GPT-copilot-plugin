@@ -18,7 +18,7 @@ package com.ld.chatgptcopilot.util;
 
 import java.util.ResourceBundle;
 
-public class MyResourceBundleUtil {
+public class ChatGPTCopilotMessageBundleUtil {
 
     public static String getKey(String key) {
         return ResourceBundle.getBundle("com/ld/chatgptcopilot/messages/chat_gpt_copilot_messages").getString(key);

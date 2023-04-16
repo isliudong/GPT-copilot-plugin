@@ -23,14 +23,14 @@ public class AskChatGPTAction extends AbsChatGetMenuAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        if(isNull(project)){
+        if (isNull(project)) {
             return;
         }
         Editor editor = e.getRequiredData(CommonDataKeys.EDITOR);
         String selectedText = editor.getSelectionModel().getSelectedText();
         ChatChannel chatChannel = ChatChannel.newChannel();
-        Message message1 = Message.builder().role("user").content("解释这段文本内容：").build();
-        Message message2 = Message.builder().role("user").content(selectedText).build();
+        Message message1 = new Message("user", "解释这段文本内容：");
+        Message message2 = new Message("user", selectedText);
         chatChannel.getMessages().add(message1);
         chatChannel.getMessages().add(message2);
         askCopilot(project, editor, chatChannel);

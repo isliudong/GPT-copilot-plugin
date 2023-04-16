@@ -19,17 +19,17 @@ import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.model.Message;
 import com.ld.chatgptcopilot.persistent.ChatGPTCopilotChannelManager;
 import com.ld.chatgptcopilot.ui.dialog.DynamicCommendDialog;
-import com.ld.chatgptcopilot.util.MyResourceBundleUtil;
+import com.ld.chatgptcopilot.util.ChatGPTCopilotMessageBundleUtil;
 import icons.ChatGPTCopilotIcons;
 import org.jetbrains.annotations.NotNull;
 
 public class DynamicActionGroup extends ActionGroup {
     public final List<String> defaultActionsCommend = new ArrayList<>(Arrays
-            .asList(MyResourceBundleUtil.getKey("explain"),
-            MyResourceBundleUtil.getKey("translate_to_chinese"),
-                    MyResourceBundleUtil.getKey("translate_to_english"),
-                    MyResourceBundleUtil.getKey("check_bugs"),
-                    MyResourceBundleUtil.getKey("optimize_code")));
+            .asList(ChatGPTCopilotMessageBundleUtil.getKey("explain"),
+                    ChatGPTCopilotMessageBundleUtil.getKey("translate_to_chinese"),
+                    ChatGPTCopilotMessageBundleUtil.getKey("translate_to_english"),
+                    ChatGPTCopilotMessageBundleUtil.getKey("check_bugs"),
+                    ChatGPTCopilotMessageBundleUtil.getKey("optimize_code")));
 
     @Override
     public AnAction @NotNull [] getChildren(AnActionEvent event) {
@@ -75,8 +75,8 @@ public class DynamicActionGroup extends ActionGroup {
             }
             String selectedText = editor.getSelectionModel().getSelectedText();
             ChatChannel chatChannel = ChatChannel.newChannel();
-            Message message1 = Message.builder().role("user").content(commend + ":").build();
-            Message message2 = Message.builder().role("user").content(selectedText).build();
+            Message message1 = new Message("user", commend + ":");
+            Message message2 = new Message("user", selectedText);
             chatChannel.getMessages().add(message1);
             chatChannel.getMessages().add(message2);
             askCopilot(project, e.getRequiredData(CommonDataKeys.EDITOR), chatChannel);
