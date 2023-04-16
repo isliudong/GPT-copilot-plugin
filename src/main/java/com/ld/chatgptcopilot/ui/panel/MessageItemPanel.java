@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
+import com.intellij.ide.util.TipUIUtil;
 import com.intellij.ui.Gray;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBPanel;
@@ -17,7 +18,6 @@ import com.intellij.util.ui.UIUtil;
 import com.ld.chatgptcopilot.model.Message;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotCommonUtil;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotPanelUtil;
-import com.ld.chatgptcopilot.util.ChatTipUIUtil;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nls;
@@ -31,7 +31,7 @@ public class MessageItemPanel extends JBPanel {
     @Getter
     private MessageHtmlPanel htmlPanel;
     @Getter
-    private ChatTipUIUtil.Browser browser;
+    private TipUIUtil.Browser browser;
 
     JBPanel loadingPanel = ChatGPTCopilotPanelUtil.createLoadingPanel();
 

@@ -1,4 +1,6 @@
 <h3>0.6.0</h3>
+<img src="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrkaz8upkcho/b/bucket-img-public/o/gptplugincodeHighlighting.png">
+
 <p>Feature: Funky code highlighting</p>
 <p>Feature: New UI with option to switch to original UI</p>
 <p>Feature: Delete chat history with ease</p>

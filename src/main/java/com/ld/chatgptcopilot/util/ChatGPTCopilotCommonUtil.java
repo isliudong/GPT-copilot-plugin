@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.intellij.application.options.colors.ColorAndFontOptions;
 import com.intellij.application.options.colors.SimpleEditorPreview;
+import com.intellij.ide.util.TipUIUtil;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
@@ -55,16 +56,16 @@ public class ChatGPTCopilotCommonUtil {
     }
 
 
-    public static ChatTipUIUtil.Browser getHtmlPanel(String markdown) {
+    public static TipUIUtil.Browser getHtmlPanel(String markdown) {
 
-        ChatTipUIUtil.Browser myBrowser = ChatTipUIUtil.createBrowser();
+        TipUIUtil.Browser myBrowser = TipUIUtil.createBrowser();
         myBrowser.getComponent().setBorder(JBUI.Borders.empty(0, 10, 8, 10));
         myBrowser.setText(md2html(markdown));
         return myBrowser;
     }
 
-    public static ChatTipUIUtil.Browser getHtmlPanel() {
-        ChatTipUIUtil.Browser myBrowser = ChatTipUIUtil.createBrowser();
+    public static TipUIUtil.Browser getHtmlPanel() {
+        TipUIUtil.Browser myBrowser = TipUIUtil.createBrowser();
         myBrowser.getComponent().setBorder(JBUI.Borders.empty(0, 10, 8, 10));
         return myBrowser;
     }
