@@ -8,8 +8,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * 秘钥文本加密
  */
-public final class PasswordUtil {
-    private PasswordUtil() {
+public final class ChatGPTCopilotPasswordUtil {
+    private ChatGPTCopilotPasswordUtil() {
     }
 
     // weak encryption just to avoid plain text passwords in text files

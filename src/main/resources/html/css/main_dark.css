@@ -1,0 +1,132 @@
+body{
+    font-family: Arial, sans-serif;
+    background-color: #2B2B2B !important;
+    /*字体颜色*/
+    color: #A9B7C6 !important;
+    font-size: 12px !important;
+}
+html {
+    scroll-behavior: smooth;
+}
+/* 左侧内容 */
+.left {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.left img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.left .content {
+    background-color: #3C3F41;
+    /*background-color: #3e4449;*/
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 100%;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    overflow: hidden;
+}
+
+/* 右侧内容 */
+.right {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.right img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-left: 10px;
+}
+.right .content {
+    background-color: #3C3F41;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 100%;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    overflow: hidden;
+}
+
+/* Customize scrollbar for chatlogs */
+::-webkit-scrollbar {
+    width: 9px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #2B2B2B;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #4E4E4E
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #636566;
+}
+
+/*cursor*/
+.cursor {
+    display: inline-block;
+    width: 10px;
+    height: 20px;
+    margin-bottom: -4px;
+    background-color: black;
+    animation: blinkCursor 1s infinite;
+}
+@keyframes blinkCursor {
+    50% {
+        opacity: 0;
+    }
+}
+
+/*code*/
+.icon-wrapper {
+    width: 20px;
+    height: 20px;
+}
+
+.code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.code-header .actions {
+    display: flex;
+    gap: 8px;
+}
+
+.lang {
+    letter-spacing: 1.2px;
+}
+
+.copy-button, .replace-button {
+    cursor: pointer;
+    border-radius: 4px;
+    border: 1px solid #2B2B2B;
+    background-color: #2B2B2B;
+    color: inherit;
+}
+/*example-text*/
+.example-text {
+    background-color: #36383A;
+    color: inherit;
+    padding: 16px;
+    border: 0;
+    border-radius: 6px;
+    text-align: center;
+}

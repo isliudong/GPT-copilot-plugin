@@ -22,14 +22,14 @@ import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextArea;
 import com.ld.chatgptcopilot.actions.ChannelContinuousAction;
+import com.ld.chatgptcopilot.actions.ClearChannelAction;
 import com.ld.chatgptcopilot.actions.NewUIAction;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.model.Message;
 import com.ld.chatgptcopilot.persistent.ChatGPTCopilotServerManager;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotPanelUtil;
-import com.ld.chatgptcopilot.util.ChatGPTCopilotUtil;
+import com.ld.chatgptcopilot.util.ChatGPTCopilotRequestUtil;
 import lombok.Getter;
-import org.apache.commons.lang3.BooleanUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,7 +71,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
         chatPanel.refreshContent(newUI);
         if (newUI) {
             splitter.setFirstComponent(chatPanel);
-        }else {
+        } else {
             chatScrollPane = ScrollPaneFactory.createScrollPane(chatPanel);
             //禁止水平滚动
             chatScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -142,6 +142,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
             DefaultActionGroup actionGroup = new DefaultActionGroup();
             actionGroup.add(new ChannelContinuousAction(chatChannel));
             actionGroup.add(new NewUIAction(chatPanel));
+            actionGroup.add(new ClearChannelAction(chatPanel));
             JComponent actionsToolbar = createActionsToolbar(actionGroup);
             add(actionsToolbar);
 
@@ -176,7 +177,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
                         if (apiToken == null) {
                             return;
                         }
-                        ChatGPTCopilotUtil.postToAiAndUpdateUi(chatPanel, chatChannel, message, apiToken, () -> scrollToBottom(chatScrollPane));
+                        ChatGPTCopilotRequestUtil.postToAiAndUpdateUi(chatPanel, chatChannel, message, apiToken, () -> scrollToBottom(chatScrollPane));
                     });
 
 
@@ -234,7 +235,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
 
 
     public void setEmptyContent() {
-        setContent(ChatGPTCopilotPanelUtil.createPlaceHolderPanel("Select issue to view details"));
+        setContent(ChatGPTCopilotPanelUtil.createPlaceHolderPanel("nothing here"));
     }
 
 }

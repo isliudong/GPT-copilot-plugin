@@ -32,7 +32,7 @@ import okhttp3.sse.EventSources;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ChatGPTCopilotUtil {
+public class ChatGPTCopilotRequestUtil {
     private static final Pattern BODY_NAME_PATTERN = Pattern.compile("(\\[~(\\w+)])");
 
     public static String getPrettyDateTime(Date date) {
@@ -72,7 +72,7 @@ public class ChatGPTCopilotUtil {
             ThreadUtil.execAsync(() -> summaryTitle(chatChannel, apiToken));
 
         } catch (Exception e) {
-            IdeaUtil.showFailedNotification("AI Copilot is sick：" + e.getMessage());
+            ChatGPTCopilotCommonUtil.showFailedNotification("AI Copilot is sick：" + e.getMessage());
         }
     }
 
@@ -145,7 +145,7 @@ public class ChatGPTCopilotUtil {
 
             @Override
             public void onEvent(@NotNull EventSource eventSource, @Nullable String id, @Nullable String type, @NotNull String data) {
-                System.out.println(data);
+                System.out.println(new Date() + data);
                 super.onEvent(eventSource, id, type, data);
 
                 if ("[DONE]".equals(data)) {
@@ -164,7 +164,7 @@ public class ChatGPTCopilotUtil {
                     newContent = false;
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
-                    IdeaUtil.showFailedNotification(data);
+                    ChatGPTCopilotCommonUtil.showFailedNotification(data);
                     messageListPanel.removeMessage(newMessage);
                     messageListPanel.removeMessage(assistantMess);
                     inputPanel.restoreLastText();
@@ -178,14 +178,14 @@ public class ChatGPTCopilotUtil {
             public void onFailure(@NotNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
                 super.onFailure(eventSource, t, response);
                 if (t != null) {
-                    IdeaUtil.showFailedNotification("netWork error：" + t.getMessage());
+                    ChatGPTCopilotCommonUtil.showFailedNotification("netWork error：" + t.getMessage());
                 }
 
                 if (response != null && response.body() != null) {
                     try {
-                        IdeaUtil.showFailedNotification(response.body().string());
+                        ChatGPTCopilotCommonUtil.showFailedNotification(response.body().string());
                     } catch (IOException e) {
-                        IdeaUtil.showFailedNotification(e.getMessage());
+                        ChatGPTCopilotCommonUtil.showFailedNotification(e.getMessage());
                     }
                 }
                 messageListPanel.removeLoading();

@@ -3,7 +3,6 @@ package com.ld.chatgptcopilot.ui.panel;
 import java.awt.*;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBPanel;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotPanelUtil;
@@ -36,14 +35,14 @@ public class AiCopilotChatPanel extends JBPanel {
         }
         this.newUI = newUI;
         setContent();
-        updateUI();
     }
 
     public void setContent() {
         removeAll();
         setLayout(new BorderLayout());
-        messageListPanel = newUI ? new HtmlMessageListDisplayPanel(chatChannel, this) : new MessageListDisplayPanel(chatChannel, this);
+        messageListPanel = newUI ? new HtmlMessageListDisplayPanel(project, chatChannel, this) : new MessageListDisplayPanel(project, chatChannel, this);
         add(messageListPanel, BorderLayout.CENTER);
+        updateUI();
     }
 
 

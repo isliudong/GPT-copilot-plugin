@@ -80,27 +80,27 @@ public final class ChatTipUIUtil {
                     .withGapsBetweenParagraphs()
                     .build();
 
-            String fileName = "styles/css/" + (StartupUiUtil.isUnderDarcula() ? "tips_darcula.css" : "tips.css");
-            try {
-                byte[] data = ResourceUtil.getResourceAsBytes(fileName, ChatTipUIUtil.class.getClassLoader());
-                if (!ApplicationManager.getApplication().isUnitTestMode()) {
-                    LOG.assertTrue(data != null);
-                }
-                if (data != null) {
-                    kit.getStyleSheet().addStyleSheet(StyleSheetUtil.loadStyleSheet(new ByteArrayInputStream(data)));
-                    //加载js文件
-                    String jsFileName = "styles/js/" + (StartupUiUtil.isUnderDarcula() ? "tips_darcula.js" : "tips.js");
-                    byte[] jsData = ResourceUtil.getResourceAsBytes(jsFileName, ChatTipUIUtil.class.getClassLoader());
-                    if (!ApplicationManager.getApplication().isUnitTestMode()) {
-                        LOG.assertTrue(jsData != null);
-                    }
-                    if (jsData != null) {
-                        kit.getStyleSheet().addStyleSheet(StyleSheetUtil.loadStyleSheet(new ByteArrayInputStream(jsData)));
-                    }
-                }
-            } catch (IOException e) {
-                LOG.error("Cannot load stylesheet " + fileName, e);
-            }
+            //String fileName = "styles/css/" + (StartupUiUtil.isUnderDarcula() ? "tips_darcula.css" : "tips.css");
+            //try {
+            //    byte[] data = ResourceUtil.getResourceAsBytes(fileName, ChatTipUIUtil.class.getClassLoader());
+            //    if (!ApplicationManager.getApplication().isUnitTestMode()) {
+            //        LOG.assertTrue(data != null);
+            //    }
+            //    if (data != null) {
+            //        kit.getStyleSheet().addStyleSheet(StyleSheetUtil.loadStyleSheet(new ByteArrayInputStream(data)));
+            //        //加载js文件
+            //        String jsFileName = "styles/js/" + (StartupUiUtil.isUnderDarcula() ? "tips_darcula.js" : "tips.js");
+            //        byte[] jsData = ResourceUtil.getResourceAsBytes(jsFileName, ChatTipUIUtil.class.getClassLoader());
+            //        if (!ApplicationManager.getApplication().isUnitTestMode()) {
+            //            LOG.assertTrue(jsData != null);
+            //        }
+            //        if (jsData != null) {
+            //            kit.getStyleSheet().addStyleSheet(StyleSheetUtil.loadStyleSheet(new ByteArrayInputStream(jsData)));
+            //        }
+            //    }
+            //} catch (IOException e) {
+            //    LOG.error("Cannot load stylesheet " + fileName, e);
+            //}
             setEditorKit(kit);
         }
 

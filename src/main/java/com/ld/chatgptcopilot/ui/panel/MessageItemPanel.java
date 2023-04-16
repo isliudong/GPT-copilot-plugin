@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
-import com.intellij.ide.util.TipUIUtil;
 import com.intellij.ui.Gray;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBPanel;
@@ -16,8 +15,9 @@ import com.intellij.util.ui.HtmlPanel;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
 import com.ld.chatgptcopilot.model.Message;
+import com.ld.chatgptcopilot.util.ChatGPTCopilotCommonUtil;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotPanelUtil;
-import com.ld.chatgptcopilot.util.IdeaUtil;
+import com.ld.chatgptcopilot.util.ChatTipUIUtil;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nls;
@@ -31,7 +31,7 @@ public class MessageItemPanel extends JBPanel {
     @Getter
     private MessageHtmlPanel htmlPanel;
     @Getter
-    private TipUIUtil.Browser browser;
+    private ChatTipUIUtil.Browser browser;
 
     JBPanel loadingPanel = ChatGPTCopilotPanelUtil.createLoadingPanel();
 
@@ -89,8 +89,8 @@ public class MessageItemPanel extends JBPanel {
 
         String noteBody = message.getContent();
         //按markdown格式解析为html panel
-        browser = IdeaUtil.getBrowser();
-        browser.setText(IdeaUtil.md2html(noteBody));
+        browser = ChatGPTCopilotCommonUtil.getHtmlPanel();
+        browser.setText(ChatGPTCopilotCommonUtil.md2html(noteBody));
         //使用微软雅黑高亮字体
         browser.getComponent().setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
         //纯白字体，纯黑色背景
@@ -107,7 +107,7 @@ public class MessageItemPanel extends JBPanel {
     public void appendContent() {
         try {
             SwingUtilities.invokeAndWait(() -> {
-                browser.setText(IdeaUtil.md2html(this.message.getContent()));
+                browser.setText(ChatGPTCopilotCommonUtil.md2html(this.message.getContent()));
                 browser.getComponent().revalidate();
                 browser.getComponent().repaint();
                 browser.getComponent().updateUI();
@@ -126,7 +126,7 @@ public class MessageItemPanel extends JBPanel {
             });
         } catch (InterruptedException | InvocationTargetException e) {
             e.printStackTrace();
-            IdeaUtil.showFailedNotification(e.getMessage());
+            ChatGPTCopilotCommonUtil.showFailedNotification(e.getMessage());
         }
         refreshListeners.forEach(Runnable::run);
     }

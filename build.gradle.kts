@@ -22,6 +22,7 @@ repositories {
 dependencies {
     implementation("org.projectlombok:lombok:1.18.26")
     implementation("com.vladsch.flexmark:flexmark-all:0.64.0")
+    implementation("org.apache.commons:commons-text:1.10.0")
     annotationProcessor("org.projectlombok:lombok:1.18.26")
     implementation("com.vladsch.flexmark:flexmark:0.64.0")
     implementation("com.vladsch.flexmark:flexmark-util:0.64.0")

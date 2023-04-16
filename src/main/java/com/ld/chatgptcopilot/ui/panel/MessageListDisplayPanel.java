@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
+import com.intellij.openapi.project.Project;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.model.Message;
 
@@ -12,8 +13,8 @@ public class MessageListDisplayPanel extends AbstractChatDisplayPanel {
     private final List<MessageItemPanel> messageItemList = new ArrayList<>();
     private MessageItemPanel loadingMessageItem;
 
-    public MessageListDisplayPanel(ChatChannel chatChannel, AiCopilotChatPanel aiCopilotChatPanel) {
-        super(chatChannel, aiCopilotChatPanel);
+    public MessageListDisplayPanel(Project project, ChatChannel chatChannel, AiCopilotChatPanel aiCopilotChatPanel) {
+        super(project, chatChannel, aiCopilotChatPanel);
         setContent();
     }
 
