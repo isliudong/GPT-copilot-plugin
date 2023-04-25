@@ -25,4 +25,16 @@ public class ChatGPTCopilotFileUtils {
             throw new RuntimeException("Unable to read resource", e);
         }
     }
+
+    //加载远程内容
+    public static String loadRemote(String url) {
+        try (var stream = new java.net.URL(url).openStream()) {
+            return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to read resource", e);
+        }
+    }
+
+
+
 }

@@ -1,3 +1,7 @@
+<h3>0.6.1</h3>
+<p>Feature: beautify code highlighting</p>
+<p>Feature: Token Compression</p>
+
 <h3>0.6.0</h3>
 <img src="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/nrkaz8upkcho/b/bucket-img-public/o/gptplugincodeHighlighting.png">
 

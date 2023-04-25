@@ -24,6 +24,7 @@ import com.intellij.ui.components.JBTextArea;
 import com.ld.chatgptcopilot.actions.ChannelContinuousAction;
 import com.ld.chatgptcopilot.actions.ClearChannelAction;
 import com.ld.chatgptcopilot.actions.NewUIAction;
+import com.ld.chatgptcopilot.actions.TokenCompressionAction;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.model.Message;
 import com.ld.chatgptcopilot.persistent.ChatGPTCopilotServerManager;
@@ -60,9 +61,12 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
         //创建一个聊天面板来显示聊天信息
         //分割面板
         splitter = new Splitter(true, 1f);
+        //设置分割线的颜色
+        splitter.setDividerWidth(2);
         chatPanel = new AiCopilotChatPanel(chatChannel, project, this, newUI);
         loadFirst(newUI);
         inputPanel = new InputPanel(chatChannel, chatPanel);
+
         splitter.setSecondComponent(inputPanel);
         setContent(splitter);
     }
@@ -141,6 +145,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
             //设置输入框顶部按钮
             DefaultActionGroup actionGroup = new DefaultActionGroup();
             actionGroup.add(new ChannelContinuousAction(chatChannel));
+            actionGroup.add(new TokenCompressionAction(chatPanel));
             actionGroup.add(new NewUIAction(chatPanel));
             actionGroup.add(new ClearChannelAction(chatPanel));
             JComponent actionsToolbar = createActionsToolbar(actionGroup);

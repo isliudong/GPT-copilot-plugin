@@ -22,7 +22,7 @@ public class ChatGPTCopilotUIUtil {
     private static String getCss() {
         String highlightCSS;
         if (UIUtil.isUnderDarcula()) {
-            highlightCSS = ChatGPTCopilotFileUtils.getResource("/html/css/highlight_Railscasts.min.css");
+            highlightCSS = ChatGPTCopilotFileUtils.getResource("/html/css/highlight_androidstudio.css");
         } else {
             highlightCSS = ChatGPTCopilotFileUtils.getResource("/html/css/highlight_tomorrow.min.css");
         }

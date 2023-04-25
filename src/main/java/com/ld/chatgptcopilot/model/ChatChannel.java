@@ -30,6 +30,8 @@ public class ChatChannel {
 
     @Builder.Default
     private Boolean continuousFlag = true;
+    @Builder.Default
+    private Boolean tokenCompression = false;
 
     private Boolean stream;
     private List<Choice> choices;
@@ -39,6 +41,7 @@ public class ChatChannel {
     public void clearOther() {
         this.setName(null);
         this.setHtml(null);
+        this.setTokenCompression(null);
         this.setContinuousFlag(null);
         if (CollectionUtils.isNotEmpty(messages)) {
             messages.forEach(Message::clearOther);

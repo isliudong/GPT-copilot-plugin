@@ -6,6 +6,7 @@ import static com.intellij.ui.jcef.JBCefClient.Properties.JS_QUERY_POOL_SIZE;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.util.List;
 import javax.swing.*;
 
 import com.intellij.openapi.project.Project;
@@ -17,7 +18,6 @@ import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.model.Message;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotCommonUtil;
 import lombok.Getter;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
@@ -83,7 +83,7 @@ public class HtmlMessageListDisplayPanel extends AbstractChatDisplayPanel {
                 messageHtmlPanel.getJBCefClient().setProperty(JS_QUERY_POOL_SIZE, 20);
                 messageHtmlPanelFlag = true;
             } else {
-                browserShowChannelMessages();
+                browserShowChannelMessages(messageList);
             }
             add(messageHtmlPanel.getComponent());
             browserToBottom();
@@ -93,14 +93,14 @@ public class HtmlMessageListDisplayPanel extends AbstractChatDisplayPanel {
 
     @Override
     public void addMessage(Message message) {
-        browserAppendMessage(message);
+        browserAddMessage(message);
         messageList.add(message);
     }
 
     @Override
     public void removeMessage(Message message) {
         messageList.remove(message);
-        String code = "var divs = document.getElementsByClassName('chat-container')[0];var div = document.getElementById('" + message.getId() + "');divs.removeChild(div);";
+        String code = String.format("removeMessage('%s')", message.getId());
         messageHtmlPanel.getCefBrowser().executeJavaScript(code, "", 0);
     }
 
@@ -109,7 +109,7 @@ public class HtmlMessageListDisplayPanel extends AbstractChatDisplayPanel {
         if (message.getContent() == null) {
             message.setContent("");
         }
-        browserReplaceTextWithLoading(message);
+        browserLoadingMessage(message);
         //browserHighlightAll(); 实时高亮导致页面闪烁
         browserToBottom();
     }
@@ -117,7 +117,7 @@ public class HtmlMessageListDisplayPanel extends AbstractChatDisplayPanel {
 
     @Override
     public void appendMessage(Message message) {
-        browserReplaceLastMessage(message);
+        browserUpdateMessage(message);
         browserHighlightAll();
         browserToBottom();
     }
@@ -146,46 +146,39 @@ public class HtmlMessageListDisplayPanel extends AbstractChatDisplayPanel {
         browserRemoveCursor();
     }
 
-    private void browserShowChannelMessages() {
-        String messagesHtml = ChatGPTCopilotCommonUtil.getMessagesHtml(messageList);
-        //在倒数第一个class为content的div中的第一个p标签中追加内容
+    private void browserShowChannelMessages(List<Message> messages) {
+        String messagesHtml = ChatGPTCopilotCommonUtil.getMessagesHtml(messages);
         String escapeMessageHtml = StringEscapeUtils.escapeJavaScript(messagesHtml);
         String code = "var div = document.getElementsByClassName('chat-container')[0];div.innerHTML = \"" + escapeMessageHtml + "\";";
         messageHtmlPanel.getCefBrowser().executeJavaScript(code, "", 0);
         browserHighlightAll();
-        //messageHtmlPanel.getCefBrowser().getSource(string -> {
-        //    System.out.println(string);
-        //});
     }
 
-    private void browserReplaceTextWithLoading(Message message) {
-        //替换换行符为br标签
-        //message.setContent(message.getContent().replace("\n", "<br/>"));
+    private void browserLoadingMessage(Message message) {
         //在倒数第一个class为content的div中的第一个p标签中追加内容
         String contentHtml = ChatGPTCopilotCommonUtil.getContentHtml(message);
         //去掉结尾的</p>
         contentHtml = contentHtml.substring(0, contentHtml.length() - 5);
         String escapeMessageHtml = StringEscapeUtils.escapeJavaScript(contentHtml + "<span class='cursor'></span>" + "</p>");
 
-        String code = "var divs = document.getElementsByClassName('content');var div = divs[divs.length-1];div.getElementsByTagName('p')[0].innerHTML = \"" + escapeMessageHtml + "\";";
+        String code = String.format("replaceMessageContent('%s','%s')", message.getId(), escapeMessageHtml);
         messageHtmlPanel.getCefBrowser().executeJavaScript(code, "", 0);
     }
 
-    private static void browserReplaceLastMessage(Message message) {
+    private static void browserUpdateMessage(Message message) {
         String contentHtml = ChatGPTCopilotCommonUtil.getContentHtml(message);
         String escapeMessageHtml = StringEscapeUtils.escapeJavaScript(contentHtml);
         //去掉开头和结尾的<p></p>
         escapeMessageHtml = escapeMessageHtml.substring(3, escapeMessageHtml.length() - 5);
 
-        //替换倒数第一个class为content的div中的第一个p标签中的内容
-        String code = "var divs = document.getElementsByClassName('content');var div = divs[divs.length-1];div.getElementsByTagName('p')[0].innerHTML = \"" + escapeMessageHtml + "\";";
+        String code = String.format("replaceMessageContent('%s','%s')", message.getId(), escapeMessageHtml);
         messageHtmlPanel.getCefBrowser().executeJavaScript(code, "", 0);
     }
 
-    private void browserAppendMessage(Message message) {
+    private void browserAddMessage(Message message) {
         String messageHtml = ChatGPTCopilotCommonUtil.getMessageHtml(message);
         String escapeMessageHtml = StringEscapeUtils.escapeJavaScript(messageHtml);
-        String code = "var div = document.getElementsByClassName('chat-container')[0];div.innerHTML += \"" + escapeMessageHtml + "\";";
+        String code = String.format("addMessage('%s')", escapeMessageHtml);
         messageHtmlPanel.getCefBrowser().executeJavaScript(code, "", 0);
         browserHighlightAll();
         browserToBottom();
@@ -197,12 +190,12 @@ public class HtmlMessageListDisplayPanel extends AbstractChatDisplayPanel {
     }
 
     private static void browserAddCursor(String id) {
-        String code = "addCursor(\"" + id + "\")";
+        String code = String.format("addCursor('%s')", id);
         messageHtmlPanel.getCefBrowser().executeJavaScript(code, "", 0);
     }
 
     private static void browserAddCursorLast() {
-        String code1 = "var divs = document.getElementsByClassName('content');var div = divs[divs.length-1];div.getElementsByTagName('p')[0].innerHTML += \"" + StringEscapeUtils.escapeJavaScript("<span class=\"cursor\"></span>") + "\";";
+        String code1 = "addCursorLast()";
         messageHtmlPanel.getCefBrowser().executeJavaScript(code1, "", 0);
     }
 
@@ -212,15 +205,12 @@ public class HtmlMessageListDisplayPanel extends AbstractChatDisplayPanel {
     }
 
     private void browserToBottom() {
-        String code = "window.scrollTo({\n" +
-                "    top: document.body.scrollHeight,\n" +
-                "    behavior: 'smooth'\n" +
-                "  });";
+        String code = "scrollToBottom();";
         messageHtmlPanel.getCefBrowser().executeJavaScript(code, "", 0);
     }
 
-    public void displayLandingView(){
-        String code ="displayLandingView()";
+    public void displayLandingView() {
+        String code = "displayLandingView()";
         messageHtmlPanel.getCefBrowser().executeJavaScript(code, "", 0);
     }
 }
