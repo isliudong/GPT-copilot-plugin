@@ -40,6 +40,8 @@ public abstract class AbsChatGetMenuAction extends ChatGPTCopilotComponentAction
                 .setResizable(true)
                 .setShowShadow(true)
                 .setRequestFocus(true)
+                .setCancelOnWindowDeactivation(false)
+                .setCancelOnOtherWindowOpen(false)
                 .setCancelOnClickOutside(false)
                 .setCancelKeyEnabled(true)
                 .setCancelButton(new IconButton("Close", AllIcons.Actions.Close))
