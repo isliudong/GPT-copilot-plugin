@@ -1,3 +1,7 @@
+<h3>0.6.2</h3>
+<p>Feature: model customizable</p>
+<p>Feature: Channel List can be hidden</p>
+
 <h3>0.6.1</h3>
 <p>Feature: beautify code highlighting</p>
 <p>Feature: Token Compression</p>
