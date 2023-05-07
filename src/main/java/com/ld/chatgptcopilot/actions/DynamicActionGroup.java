@@ -42,7 +42,7 @@ public class DynamicActionGroup extends ActionGroup {
         }
 
         List<AnAction> actions = dynamicCommends.stream().map(TranslateAction::new).collect(Collectors.toList());
-        actions.add(new AnAction("Edit Commend", "Edit commend", ChatGPTCopilotIcons.pluginIcon) {
+        actions.add(new AnAction("Edit Commend") {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 if (isNull(e.getProject())) {
@@ -59,7 +59,7 @@ public class DynamicActionGroup extends ActionGroup {
 
 
         public TranslateAction(String commend) {
-            super(ActionProperties.of(commend, ChatGPTCopilotIcons.pluginIcon));
+            super(ActionProperties.of(commend));
             this.commend = commend;
         }
 

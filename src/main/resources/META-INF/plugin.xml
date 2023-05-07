@@ -53,7 +53,7 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="ChatGPT Copilot" anchor="left" icon="/icons/chatGPT-copilot-logo-square.svg"
+        <toolWindow id="ChatGPT Copilot" anchor="left" icon="ChatGPTCopilotIcons.pluginIcon"
                     factoryClass="com.ld.chatgptcopilot.ui.ChatGPTCopilotToolWindowFactory"/>
         <notificationGroup id="ChatGPTCopilot.BALLOON" displayType="BALLOON"/>
         <notificationGroup id="ChatGPTCopilot.STICKY_BALLOON" displayType="STICKY_BALLOON"/>
@@ -61,16 +61,16 @@
     <actions>
         <action id="ChatGPTCopilot.actions.AskChatGPTAction"
                 class="com.ld.chatgptcopilot.actions.AskChatGPTAction" icon="ChatGPTCopilotIcons.pluginIcon"
-                text="Ask Copilot" description="Ask the ai copilot">
+                text="Explain It" description="Ask the ai copilot">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
             <add-to-group group-id="ToolsMenu" anchor="last"/>
             <add-to-group group-id="ConsoleView.PopupMenu" anchor="first"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl a"/>
+            <!--<keyboard-shortcut keymap="$default" first-keystroke="shift ctrl a"/>-->
         </action>
         <group id="ChatGPTCopilot.customActionGroup" class="com.ld.chatgptcopilot.actions.DynamicActionGroup"
                popup="true"
                icon="ChatGPTCopilotIcons.pluginIcon"
-               text="Dynamic Action" description="Dynamic action">
+               text="ChatGPT Copilot" description="Dynamic action">
             <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="ChatGPTCopilot.actions.AskChatGPTAction"/>
             <add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="ChatGPTCopilot.actions.AskChatGPTAction"/>
             <add-to-group group-id="ConsoleView.PopupMenu" anchor="after" relative-to-action="ChatGPTCopilot.actions.AskChatGPTAction"/>

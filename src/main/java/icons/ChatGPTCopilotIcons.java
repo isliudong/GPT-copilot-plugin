@@ -10,7 +10,7 @@ import com.intellij.util.ui.AnimatedIcon;
 
 public interface ChatGPTCopilotIcons {
 
-    Icon pluginIcon = IconLoader.getIcon("icons/chatGPT-copilot-logo-square.svg", ChatGPTCopilotIcons.class);
+    Icon pluginIcon = IconLoader.getIcon("icons/pluginIcon.svg", ChatGPTCopilotIcons.class);
     Icon update = IconLoader.getIcon("icons/update.svg", ChatGPTCopilotIcons.class);
     Icon format = IconLoader.getIcon("icons/format.svg", ChatGPTCopilotIcons.class);
     Icon format_hover = IconLoader.getIcon("icons/format-hover.svg", ChatGPTCopilotIcons.class);
