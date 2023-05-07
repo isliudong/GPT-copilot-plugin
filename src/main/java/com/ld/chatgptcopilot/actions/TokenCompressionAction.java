@@ -6,7 +6,7 @@ import com.ld.chatgptcopilot.commen.ActionProperties;
 import com.ld.chatgptcopilot.commen.ChatGPTCopilotComponentAction;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.ui.panel.AiCopilotChatPanel;
-import com.ld.chatgptcopilot.util.ChatGPTCopilotMessageBundleUtil;
+import com.ld.chatgptcopilot.util.MultilingualUtil;
 import icons.ChatGPTCopilotIcons;
 import org.apache.commons.lang3.BooleanUtils;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public class TokenCompressionAction extends ChatGPTCopilotComponentAction<AiCopilotChatPanel> {
 
     final ChatChannel chatChannel;
-    private static final ActionProperties properties = ActionProperties.of("Token Compression", ChatGPTCopilotIcons.compression);
+    private static final ActionProperties properties = ActionProperties.of(MultilingualUtil.getKey("token_compression"), ChatGPTCopilotIcons.compression);
 
     public TokenCompressionAction(AiCopilotChatPanel aiCopilotChatPanel) {
         super(properties);

@@ -6,6 +6,7 @@ import com.ld.chatgptcopilot.commen.ActionProperties;
 import com.ld.chatgptcopilot.commen.ChatGPTCopilotComponentAction;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.ui.panel.AiCopilotChatPanel;
+import com.ld.chatgptcopilot.util.MultilingualUtil;
 import icons.ChatGPTCopilotIcons;
 import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public class ClearChannelAction extends ChatGPTCopilotComponentAction<AiCopilotChatPanel> {
 
     final ChatChannel chatChannel;
-    private static final ActionProperties properties = ActionProperties.of("Clear", ChatGPTCopilotIcons.cleanDark);
+    private static final ActionProperties properties = ActionProperties.of(MultilingualUtil.getKey("clear"), ChatGPTCopilotIcons.cleanDark);
 
     public ClearChannelAction(AiCopilotChatPanel aiCopilotChatPanel) {
         super(properties);

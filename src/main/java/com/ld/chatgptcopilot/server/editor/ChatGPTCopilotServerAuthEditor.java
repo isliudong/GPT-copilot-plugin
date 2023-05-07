@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
@@ -19,6 +20,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;
+import com.intellij.util.textCompletion.TextFieldWithCompletion;
 import com.intellij.util.ui.JBUI;
 import com.ld.chatgptcopilot.actions.coffee.SupportView;
 import com.ld.chatgptcopilot.model.ChatGPTCopilotServer;
@@ -70,7 +72,7 @@ public abstract class ChatGPTCopilotServerAuthEditor {
         this.nameField.setPreferredSize(JBUI.size(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 
 
-        this.defaultServerCheckbox = new JCheckBox("Set Default");
+        this.defaultServerCheckbox = new JCheckBox();
         this.defaultServerCheckbox.setBorder(JBUI.Borders.emptyRight(4));
         this.defaultServerCheckbox.setSelected(selectedServer);
 
@@ -96,19 +98,28 @@ public abstract class ChatGPTCopilotServerAuthEditor {
         });
     }
 
+    protected void installListener(TextFieldWithCompletion textField) {
+        textField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void documentChanged(com.intellij.openapi.editor.event.@NotNull DocumentEvent event) {
+                DocumentListener.super.documentChanged(event);
+                ApplicationManager.getApplication().invokeLater(() -> apply());
+            }
+        });
+    }
+
     private void installListener(JCheckBox checkBox) {
         checkBox.addActionListener(e -> defaultServerChanged());
     }
 
-    private void installListener(JButton button){
+    private void installListener(JButton button) {
         button.addActionListener((event) -> SwingUtilities.invokeLater(() -> {
             TestChatGPTCopilotServerConnectionTask task = new TestChatGPTCopilotServerConnectionTask(project, server);
             ProgressManager.getInstance().run(task);
             Exception e = task.getException();
             if (e == null) {
                 Messages.showMessageDialog(project, "Connection is successful", "Connection", Messages.getInformationIcon());
-            }
-            else if (!(e instanceof ProcessCanceledException)) {
+            } else if (!(e instanceof ProcessCanceledException)) {
                 String message = e.getMessage();
                 if (e instanceof UnknownHostException) {
                     message = "Unknown host: " + message;
@@ -121,11 +132,11 @@ public abstract class ChatGPTCopilotServerAuthEditor {
         }));
     }
 
-    protected void apply(){
+    protected void apply() {
         this.changeUrlListener.accept(server);
     }
 
-    private void defaultServerChanged(){
+    private void defaultServerChanged() {
         this.changeListener.accept(server, defaultServerCheckbox.isSelected());
     }
 

@@ -19,17 +19,17 @@ import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.model.Message;
 import com.ld.chatgptcopilot.persistent.ChatGPTCopilotChannelManager;
 import com.ld.chatgptcopilot.ui.dialog.DynamicCommendDialog;
-import com.ld.chatgptcopilot.util.ChatGPTCopilotMessageBundleUtil;
+import com.ld.chatgptcopilot.util.MultilingualUtil;
 import icons.ChatGPTCopilotIcons;
 import org.jetbrains.annotations.NotNull;
 
 public class DynamicActionGroup extends ActionGroup {
     public final List<String> defaultActionsCommend = new ArrayList<>(Arrays
-            .asList(ChatGPTCopilotMessageBundleUtil.getKey("explain"),
-                    ChatGPTCopilotMessageBundleUtil.getKey("translate_to_chinese"),
-                    ChatGPTCopilotMessageBundleUtil.getKey("translate_to_english"),
-                    ChatGPTCopilotMessageBundleUtil.getKey("check_bugs"),
-                    ChatGPTCopilotMessageBundleUtil.getKey("optimize_code")));
+            .asList(MultilingualUtil.getKey("explain"),
+                    MultilingualUtil.getKey("translate_to_chinese"),
+                    MultilingualUtil.getKey("translate_to_english"),
+                    MultilingualUtil.getKey("check_bugs"),
+                    MultilingualUtil.getKey("optimize_code")));
 
     @Override
     public AnAction @NotNull [] getChildren(AnActionEvent event) {

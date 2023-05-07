@@ -11,6 +11,7 @@ import com.intellij.util.xmlb.annotations.Transient;
 import com.ld.chatgptcopilot.server.auth.AuthType;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotCommonUtil;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotPasswordUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 @Tag("ChatGPTCopilotServer")
@@ -26,23 +27,37 @@ public class ChatGPTCopilotServer {
 
     private String userEmail;
     private String apiToken;
+    private String model;
 
     private AuthType type;
 
     public ChatGPTCopilotServer() {
     }
 
-    private ChatGPTCopilotServer(String name, String username, String password, String userEmail, String apiToken, AuthType type) {
+    private ChatGPTCopilotServer(String name,
+                                 String username,
+                                 String password,
+                                 String userEmail,
+                                 String apiToken,
+                                 String model,
+                                 AuthType type) {
         this.name = name;
         this.username = username;
         this.password = password;
         this.userEmail = userEmail;
         this.apiToken = apiToken;
+        this.model = model;
         this.type = type;
     }
 
     private ChatGPTCopilotServer(ChatGPTCopilotServer other) {
-        this(other.getName(), other.getUsername(), other.getPassword(), other.getUserEmail(), other.getApiToken(), other.getType());
+        this(other.getName(),
+                other.getUsername(),
+                other.getPassword(),
+                other.getUserEmail(),
+                other.getApiToken(),
+                other.getModel(),
+                other.getType());
     }
 
     public void withUserAndPass(String url, String username, String password) {
@@ -54,13 +69,25 @@ public class ChatGPTCopilotServer {
         setType(AuthType.USER_PASS);
     }
 
-    public void withApiToken(String name, String apiToken) {
+    public void withApiToken(String name, String apiToken, String model) {
         setName(name);
         setUsername(null);
         setPassword(null);
         setUserEmail(userEmail);
         setApiToken(apiToken);
+        setModel(model);
         setType(AuthType.API_TOKEN);
+    }
+
+    public String getModel() {
+        if (StringUtils.isBlank(model)) {
+            return "gpt-3.5-turbo";
+        }
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
     }
 
     @Attribute("url")

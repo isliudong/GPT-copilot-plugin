@@ -8,14 +8,14 @@ import com.ld.chatgptcopilot.commen.ActionProperties;
 import com.ld.chatgptcopilot.commen.ChatGPTCopilotComponentAction;
 import com.ld.chatgptcopilot.persistent.ChatGPTCopilotChannelManager;
 import com.ld.chatgptcopilot.ui.panel.AiCopilotChatPanel;
-import com.ld.chatgptcopilot.util.ChatGPTCopilotMessageBundleUtil;
+import com.ld.chatgptcopilot.util.MultilingualUtil;
 import icons.ChatGPTCopilotIcons;
 import org.apache.commons.lang3.BooleanUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class NewUIAction extends ChatGPTCopilotComponentAction<AiCopilotChatPanel> implements DumbAware {
 
-    private static final ActionProperties properties = ActionProperties.of("New UI", ChatGPTCopilotIcons.format);
+    private static final ActionProperties properties = ActionProperties.of(MultilingualUtil.getKey("new_ui"), ChatGPTCopilotIcons.format);
 
     public NewUIAction(AiCopilotChatPanel aiCopilotChatPanel) {
         super(properties);
@@ -46,14 +46,14 @@ public class NewUIAction extends ChatGPTCopilotComponentAction<AiCopilotChatPane
             }else {
                 e.getPresentation().setIcon(ChatGPTCopilotIcons.format);
             }
-            e.getPresentation().setText(ChatGPTCopilotMessageBundleUtil.getKey("Turn_Off_New_UI"));
+            e.getPresentation().setText(MultilingualUtil.getKey("new_ui"));
         } else {
             if (UIUtil.isUnderDarcula()){
                 e.getPresentation().setIcon(ChatGPTCopilotIcons.format);
             }else {
                 e.getPresentation().setIcon(ChatGPTCopilotIcons.format_hover);
             }
-            e.getPresentation().setText(ChatGPTCopilotMessageBundleUtil.getKey("Enable_New_UI"));
+            e.getPresentation().setText(MultilingualUtil.getKey("new_ui"));
         }
     }
 

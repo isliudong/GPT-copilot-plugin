@@ -22,6 +22,7 @@ import com.intellij.util.ui.JBUI;
 import com.ld.chatgptcopilot.actions.AddChatChannelAction;
 import com.ld.chatgptcopilot.actions.ConfigureChatGptAction;
 import com.ld.chatgptcopilot.actions.DeleteChatChannelAction;
+import com.ld.chatgptcopilot.actions.ShowOrHideChannelListAction;
 import com.ld.chatgptcopilot.commen.ChatGPTCopilotComponentActionGroup;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.persistent.ChatGPTCopilotChannelManager;
@@ -36,12 +37,17 @@ public class AiCopilotPanel extends SimpleToolWindowPanel {
     private AiCopilotListTableView copilotListTableView;
     private AiCopilotDetailsPanel detailsPanel;
 
+    JBSplitter splitter;
+
+    private boolean isShowList = true;
+
     public AiCopilotPanel(Project project) {
         super(false, true);
         this.project = project;
         channelManager = project.getComponent(ChatGPTCopilotChannelManager.class);
+        splitter = new JBSplitter(false, 0.4f);
         init();
-        setContent();
+        setContentWithList();
     }
 
     private void init() {
@@ -49,9 +55,13 @@ public class AiCopilotPanel extends SimpleToolWindowPanel {
     }
 
 
-    private void setContent() {
-        JComponent content;
+    private void setContentWithList() {
+        ChatChannel lastChatChannel = null;
+        if (detailsPanel != null) {
+            lastChatChannel = detailsPanel.chatChannel;
+        }
         detailsPanel = new AiCopilotDetailsPanel(project);
+        detailsPanel.showChannel(lastChatChannel, channelManager.getState().newUI);
         List<ChatChannel> chatChannels = channelManager.getChatChannels();
         List<ChatChannel> list = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(chatChannels)) {
@@ -72,21 +82,20 @@ public class AiCopilotPanel extends SimpleToolWindowPanel {
 
 
         JPanel channelListPanel = new JPanel(new BorderLayout());
-        channelListPanel.setMinimumSize(new Dimension(100, 0));
+        channelListPanel.setPreferredSize(new Dimension(50, 0));
+        channelListPanel.setMinimumSize(new Dimension(10, 0));
         channelListPanel.setBorder(JBUI.Borders.customLine(JBColor.border(), 0, 0, 0, 1));
         JScrollPane scrollPane = ScrollPaneFactory.createScrollPane(copilotListTableView);
         channelListPanel.add(scrollPane, BorderLayout.CENTER);
 
-        JBSplitter splitter = new JBSplitter();
-        splitter.setProportion(0.4f);
+
         splitter.setFirstComponent(channelListPanel);
         splitter.setSecondComponent(detailsPanel);
         splitter.setShowDividerIcon(false);
         splitter.setDividerWidth(1);
 
-        content = splitter;
 
-        super.setContent(content);
+        super.setContent(splitter);
 
     }
 
@@ -104,6 +113,7 @@ public class AiCopilotPanel extends SimpleToolWindowPanel {
         group.add(new AddChatChannelAction());
         group.add(new DeleteChatChannelAction());
         group.add(new Separator());
+        group.add(new ShowOrHideChannelListAction());
         group.add(new ConfigureChatGptAction());
         return group;
     }
@@ -132,5 +142,24 @@ public class AiCopilotPanel extends SimpleToolWindowPanel {
                 channelManager.delete(chatChannel);
             }
         });
+    }
+
+    public void showOrHideChannelList() {
+        if (isShowList) {
+            setContentWithoutList();
+            isShowList = false;
+        } else {
+            setContentWithList();
+            isShowList = true;
+        }
+        this.revalidate();
+        this.updateUI();
+    }
+
+    private void setContentWithoutList() {
+        ChatChannel chatChannel = detailsPanel.chatChannel;
+        detailsPanel = new AiCopilotDetailsPanel(project);
+        detailsPanel.showChannel(chatChannel, channelManager.getState().newUI);
+        super.setContent(detailsPanel);
     }
 }

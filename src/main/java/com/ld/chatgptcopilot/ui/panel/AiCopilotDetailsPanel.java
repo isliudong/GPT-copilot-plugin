@@ -46,6 +46,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
     @Getter
     InputPanel inputPanel;
     JScrollPane chatScrollPane;
+    public ChatChannel chatChannel;
 
     public AiCopilotDetailsPanel(Project project) {
         super(true);
@@ -58,6 +59,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
             setEmptyContent();
             return;
         }
+        this.chatChannel = chatChannel;
         //创建一个聊天面板来显示聊天信息
         //分割面板
         splitter = new Splitter(true, 1f);

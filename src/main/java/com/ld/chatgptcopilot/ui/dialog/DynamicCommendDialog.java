@@ -20,7 +20,7 @@ import com.intellij.util.ui.ListTableModel;
 import com.ld.chatgptcopilot.model.DynamicCommend;
 import com.ld.chatgptcopilot.persistent.ChatGPTCopilotChannelManager;
 import com.ld.chatgptcopilot.ui.table.column.DynamicColumnInfoHelper;
-import com.ld.chatgptcopilot.util.ChatGPTCopilotMessageBundleUtil;
+import com.ld.chatgptcopilot.util.MultilingualUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,7 +57,7 @@ public class DynamicCommendDialog extends DialogWrapper {
         commendList.setTableHeader(null);
         commendList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        setTitle(ChatGPTCopilotMessageBundleUtil.getKey("Configure_Commends"));
+        setTitle(MultilingualUtil.getKey("Configure_Commends"));
         super.init();
     }
 
@@ -86,7 +86,7 @@ public class DynamicCommendDialog extends DialogWrapper {
     private boolean validateServers() {
         for (DynamicCommend item : listModel.getItems()) {
             if (StringUtils.isBlank(item.getContent())) {
-                Messages.showErrorDialog("Commend is required", ChatGPTCopilotMessageBundleUtil.getKey("Error"));
+                Messages.showErrorDialog("Commend is required", MultilingualUtil.getKey("Error"));
                 return false;
             }
         }

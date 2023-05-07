@@ -6,6 +6,7 @@ import java.util.List;
 import com.intellij.util.xmlb.annotations.Tag;
 import com.intellij.util.xmlb.annotations.Transient;
 import com.intellij.util.xmlb.annotations.XCollection;
+import com.ld.chatgptcopilot.persistent.ChatGPTCopilotServerManager;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -79,7 +80,6 @@ public class ChatChannel {
 
     public static ChatChannel newChannel() {
         ChatChannel chatChannel = new ChatChannel();
-        chatChannel.setModel("gpt-3.5-turbo");
         chatChannel.setMessages(new ArrayList<>());
         return chatChannel;
     }

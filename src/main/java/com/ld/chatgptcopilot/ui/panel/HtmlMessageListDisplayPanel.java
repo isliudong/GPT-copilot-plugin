@@ -30,8 +30,8 @@ public class HtmlMessageListDisplayPanel extends AbstractChatDisplayPanel {
     public static final JCEFHtmlPanel messageHtmlPanel = new JCEFHtmlPanel(null);
     public static volatile boolean messageHtmlPanelFlag = false;
 
-    private final JBCefJSQuery copyCodeJsQuery = JBCefJSQuery.create((JBCefBrowserBase) messageHtmlPanel);
-    private final JBCefJSQuery replaceCodeJsQuery;
+    private JBCefJSQuery copyCodeJsQuery;
+    private JBCefJSQuery replaceCodeJsQuery;
 
 
     public HtmlMessageListDisplayPanel(Project project, ChatChannel chatChannel, AiCopilotChatPanel aiCopilotChatPanel) {
@@ -40,18 +40,6 @@ public class HtmlMessageListDisplayPanel extends AbstractChatDisplayPanel {
         messageHtmlPanel.getCefBrowser().getUIComponent().setBackground(UIUtil.getPanelBackground());
         setBackground(UIUtil.getPanelBackground());
         setContent();
-
-        this.copyCodeJsQuery.addHandler((text) -> {
-            StringSelection stringSelection = new StringSelection(text);
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            clipboard.setContents(stringSelection, null);
-            return null;
-        });
-
-        this.replaceCodeJsQuery = new ReplaceInEditorQuery(project, messageHtmlPanel, editor -> {
-        }).getQuery();
-
-        addBrowserJavaBridge();
 
     }
 
@@ -82,6 +70,19 @@ public class HtmlMessageListDisplayPanel extends AbstractChatDisplayPanel {
                 messageHtmlPanel.setHtml(html);
                 messageHtmlPanel.getJBCefClient().setProperty(JS_QUERY_POOL_SIZE, 20);
                 messageHtmlPanelFlag = true;
+
+                this.copyCodeJsQuery = JBCefJSQuery.create((JBCefBrowserBase) messageHtmlPanel);
+                this.copyCodeJsQuery.addHandler((text) -> {
+                    StringSelection stringSelection = new StringSelection(text);
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    clipboard.setContents(stringSelection, null);
+                    return null;
+                });
+
+                this.replaceCodeJsQuery = new ReplaceInEditorQuery(this.getProject(), messageHtmlPanel, editor -> {
+                }).getQuery();
+
+                addBrowserJavaBridge();
             } else {
                 browserShowChannelMessages(messageList);
             }

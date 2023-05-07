@@ -79,10 +79,18 @@ public class ChatGPTCopilotServerManager implements PersistentStateComponent<Cha
 
     public String getAPIToken() {
         if (getCurrentChatGPTCopilotServer() == null || getCurrentChatGPTCopilotServer().getApiToken() == null) {
-            ChatGPTCopilotCommonUtil.showNotification("configure", "Please configure your ChatGPT Copilot API Token");
+            ChatGPTCopilotCommonUtil.showNotification("configure", "Please configure your ChatGPT Copilot API Key");
             return null;
         }
         return getCurrentChatGPTCopilotServer().getApiToken();
+    }
+
+    public String getModel() {
+        if (getCurrentChatGPTCopilotServer() == null) {
+            ChatGPTCopilotCommonUtil.showNotification("configure", "Please configure your ChatGPT Copilot");
+            return null;
+        }
+        return getCurrentChatGPTCopilotServer().getModel();
     }
 
     public static class Config {

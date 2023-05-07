@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.util.text.DateFormatUtil;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.model.Message;
+import com.ld.chatgptcopilot.persistent.ChatGPTCopilotServerManager;
 import com.ld.chatgptcopilot.ui.panel.AbstractChatDisplayPanel;
 import com.ld.chatgptcopilot.ui.panel.AiCopilotChatPanel;
 import com.ld.chatgptcopilot.ui.panel.AiCopilotDetailsPanel;
@@ -43,6 +44,7 @@ public class ChatGPTCopilotRequestUtil {
     }
 
     public static void postToAi(@NotNull ChatChannel chatChannel, @Nullable Message newMessage, @NotNull String apiToken, @Nullable Runnable runnable) {
+        chatChannel.setModel(ChatGPTCopilotServerManager.getInstance().getModel());
         ChatChannel data = new ChatChannel();
         BeanUtil.copyProperties(chatChannel, data);
         if (chatChannel.isNotContinuing()) {
@@ -80,6 +82,7 @@ public class ChatGPTCopilotRequestUtil {
     }
 
     public static void postToAiAndUpdateUi(AiCopilotChatPanel copilotChatPanel, @NotNull ChatChannel chatChannel, @Nullable Message newMessage, @NotNull String apiToken, @Nullable Runnable runnable) {
+        chatChannel.setModel(ChatGPTCopilotServerManager.getInstance().getModel());
         ChatChannel bodyData = ChatChannel.newChannel();
         BeanUtil.copyProperties(chatChannel, bodyData);
 
