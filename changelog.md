@@ -1,3 +1,7 @@
+<h3>0.6.3</h3>
+<p>ADD: new desc</p>
+<p>BugFix: Fix Switching UI causes abnormal display</p>
+
 <h3>0.6.2</h3>
 <p>Feature: model customizable</p>
 <p>Feature: Channel List can be hidden</p>
