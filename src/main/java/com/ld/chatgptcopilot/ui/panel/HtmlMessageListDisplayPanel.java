@@ -138,6 +138,11 @@ public class HtmlMessageListDisplayPanel extends AbstractChatDisplayPanel {
         browserToBottom();
     }
 
+    @Override
+    public void dispose() {
+        messageHtmlPanel.dispose();
+    }
+
 
     @Override
     public void removeLoading() {
@@ -166,7 +171,7 @@ public class HtmlMessageListDisplayPanel extends AbstractChatDisplayPanel {
         messageHtmlPanel.getCefBrowser().executeJavaScript(code, "", 0);
     }
 
-    private static void browserUpdateMessage(Message message) {
+    private void browserUpdateMessage(Message message) {
         String contentHtml = ChatGPTCopilotCommonUtil.getContentHtml(message);
         String escapeMessageHtml = StringEscapeUtils.escapeJavaScript(contentHtml);
         //去掉开头和结尾的<p></p>
@@ -185,17 +190,17 @@ public class HtmlMessageListDisplayPanel extends AbstractChatDisplayPanel {
         browserToBottom();
     }
 
-    private static void browserRemoveCursor() {
+    private void browserRemoveCursor() {
         String code = "removeCursor()";
         messageHtmlPanel.getCefBrowser().executeJavaScript(code, "", 0);
     }
 
-    private static void browserAddCursor(String id) {
+    private void browserAddCursor(String id) {
         String code = String.format("addCursor('%s')", id);
         messageHtmlPanel.getCefBrowser().executeJavaScript(code, "", 0);
     }
 
-    private static void browserAddCursorLast() {
+    private void browserAddCursorLast() {
         String code1 = "addCursorLast()";
         messageHtmlPanel.getCefBrowser().executeJavaScript(code1, "", 0);
     }

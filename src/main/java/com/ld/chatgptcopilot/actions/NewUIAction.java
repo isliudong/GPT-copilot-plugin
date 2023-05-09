@@ -8,6 +8,7 @@ import com.ld.chatgptcopilot.commen.ActionProperties;
 import com.ld.chatgptcopilot.commen.ChatGPTCopilotComponentAction;
 import com.ld.chatgptcopilot.persistent.ChatGPTCopilotChannelManager;
 import com.ld.chatgptcopilot.ui.panel.AiCopilotChatPanel;
+import com.ld.chatgptcopilot.ui.panel.AiCopilotDetailsPanel;
 import com.ld.chatgptcopilot.util.MultilingualUtil;
 import icons.ChatGPTCopilotIcons;
 import org.apache.commons.lang3.BooleanUtils;
@@ -29,8 +30,8 @@ public class NewUIAction extends ChatGPTCopilotComponentAction<AiCopilotChatPane
 
         ChatGPTCopilotChannelManager.State state = project.getComponent(ChatGPTCopilotChannelManager.class).getState();
         state.setNewUI(!BooleanUtils.isTrue(state.getNewUI()));
-        getComponent().getAiCopilotDetailsPanel().loadFirst(state.getNewUI());
-
+        AiCopilotDetailsPanel aiCopilotDetailsPanel = getComponent().getAiCopilotDetailsPanel();
+        aiCopilotDetailsPanel.showChannel(aiCopilotDetailsPanel.chatChannel, state.getNewUI());
     }
 
     @Override

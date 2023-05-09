@@ -32,6 +32,9 @@ public abstract class AbstractChatDisplayPanel extends JBPanel {
     public void loading(Message message) {
     }
 
+    public void dispose() {
+    }
+
     public void removeLoading() {
     }
 

@@ -73,7 +73,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
         setContent(splitter);
     }
 
-    public void loadFirst(boolean newUI) {
+    private void loadFirst(boolean newUI) {
         chatPanel.refreshContent(newUI);
         if (newUI) {
             splitter.setFirstComponent(chatPanel);

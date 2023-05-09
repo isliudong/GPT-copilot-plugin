@@ -16,7 +16,7 @@ public class AiCopilotChatPanel extends JBPanel {
     @Getter
     private ChatChannel chatChannel;
     @Getter
-    AbstractChatDisplayPanel messageListPanel;
+    public AbstractChatDisplayPanel messageListPanel;
 
     JBPanel loadingPanel = ChatGPTCopilotPanelUtil.createLoadingPanel();
 
