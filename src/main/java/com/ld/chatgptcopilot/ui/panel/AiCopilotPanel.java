@@ -5,6 +5,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
@@ -39,7 +40,7 @@ public class AiCopilotPanel extends SimpleToolWindowPanel {
 
     JBSplitter splitter;
 
-    private boolean isShowList = true;
+    public boolean isShowList = false;
 
     public AiCopilotPanel(Project project) {
         super(false, true);
@@ -47,7 +48,7 @@ public class AiCopilotPanel extends SimpleToolWindowPanel {
         channelManager = project.getComponent(ChatGPTCopilotChannelManager.class);
         splitter = new JBSplitter(false, 0.4f);
         init();
-        setContentWithList();
+        setContentWithoutList();
     }
 
     private void init() {
@@ -115,6 +116,7 @@ public class AiCopilotPanel extends SimpleToolWindowPanel {
         group.add(new Separator());
         group.add(new ShowOrHideChannelListAction());
         group.add(new ConfigureChatGptAction());
+        //group.add(new TestAction());
         return group;
     }
 
@@ -157,9 +159,18 @@ public class AiCopilotPanel extends SimpleToolWindowPanel {
     }
 
     private void setContentWithoutList() {
-        ChatChannel chatChannel = detailsPanel.chatChannel;
+        ChatChannel lastChatChannel = null;
+        if (detailsPanel != null) {
+            lastChatChannel = detailsPanel.chatChannel;
+        } else if (CollectionUtils.isNotEmpty(channelManager.getChatChannels())) {
+            lastChatChannel = channelManager.getChatChannels().get(channelManager.getChatChannels().size() - 1);
+        }
+        if (isNull(lastChatChannel)) {
+            lastChatChannel = new ChatChannel();
+        }
         detailsPanel = new AiCopilotDetailsPanel(project);
-        detailsPanel.showChannel(chatChannel, channelManager.getState().newUI);
+        detailsPanel = new AiCopilotDetailsPanel(project);
+        detailsPanel.showChannel(lastChatChannel, channelManager.getState().newUI);
         super.setContent(detailsPanel);
     }
 }

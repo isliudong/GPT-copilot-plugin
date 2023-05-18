@@ -15,6 +15,7 @@ import com.intellij.ui.components.JBScrollPane;
 import com.ld.chatgptcopilot.commen.ActionProperties;
 import com.ld.chatgptcopilot.commen.ChatGPTCopilotComponentAction;
 import com.ld.chatgptcopilot.model.ChatChannel;
+import com.ld.chatgptcopilot.model.Message;
 import com.ld.chatgptcopilot.persistent.ChatGPTCopilotServerManager;
 import com.ld.chatgptcopilot.ui.panel.AiCopilotPanel;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotPanelUtil;
@@ -34,8 +35,11 @@ public abstract class AbsChatGetMenuAction extends ChatGPTCopilotComponentAction
         JBPanel loadingPanel = ChatGPTCopilotPanelUtil.createLoadingPanel();
         loadingPanel.setPreferredSize(new Dimension(300, 500));
         jbPanelJBPanel.add(loadingPanel, BorderLayout.CENTER);
+        String comment = chatChannel.getMessages().get(0).getContent();
+        chatChannel.getMessages().add(0,new Message("system", "You are ChatGPT, a large language model trained by OpenAI. Include code language in markdown snippets whenever possible."));
         JBPopup popup = JBPopupFactory.getInstance()
                 .createComponentPopupBuilder(jbPanelJBPanel, jbPanelJBPanel)
+                .setTitle(comment)
                 .setMovable(true)
                 .setResizable(true)
                 .setShowShadow(true)
@@ -44,7 +48,7 @@ public abstract class AbsChatGetMenuAction extends ChatGPTCopilotComponentAction
                 .setCancelOnOtherWindowOpen(false)
                 .setCancelOnClickOutside(false)
                 .setCancelKeyEnabled(true)
-                .setCancelButton(new IconButton("Close", AllIcons.Actions.Close))
+                .setCancelButton(new IconButton("Close", AllIcons.Actions.CloseHovered))
                 .createPopup();
         popup.showInBestPositionFor(editor);
 
@@ -52,6 +56,7 @@ public abstract class AbsChatGetMenuAction extends ChatGPTCopilotComponentAction
             chatChannel.setContinuousFlag(true);
             ChatGPTCopilotRequestUtil.postToAi(chatChannel, null, apiToken, () -> {
                 JComponent markdownComponent = ChatGPTCopilotCommonUtil.getHtmlPanel(chatChannel.getLastMessageContent()).getComponent();
+                markdownComponent.setFont(new Font("Sans", Font.PLAIN, 14));
                 //创建一个大小合适的面板来显示回复信息
                 SwingUtilities.invokeLater(() -> {
                     JBScrollPane jbScrollPane = new JBScrollPane(markdownComponent);

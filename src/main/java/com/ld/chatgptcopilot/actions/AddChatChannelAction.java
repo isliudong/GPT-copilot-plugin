@@ -23,9 +23,15 @@ public class AddChatChannelAction extends ChatGPTCopilotComponentAction<AiCopilo
         Optional.ofNullable(getComponent())
                 .ifPresent(component -> {
                     ChatChannel chatChannel = new ChatChannel();
-                    chatChannel.setModel("gpt-3.5-turbo");
                     chatChannel.setMessages(new ArrayList<>());
                     component.add(chatChannel);
                 });
+    }
+
+    @Override
+    public void update(@NotNull AnActionEvent e) {
+        super.update(e);
+        AiCopilotPanel component = getComponent();
+        e.getPresentation().setEnabled(component.isShowList);
     }
 }

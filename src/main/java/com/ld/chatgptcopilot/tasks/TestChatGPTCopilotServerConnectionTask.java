@@ -14,6 +14,7 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.tasks.TaskRepository;
+import com.intellij.util.textCompletion.TextFieldWithCompletion;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.model.ChatGPTCopilotServer;
 import com.ld.chatgptcopilot.model.Message;
@@ -27,13 +28,14 @@ public class TestChatGPTCopilotServerConnectionTask extends Task.Modal {
     private final TaskRepository.CancellableConnection connection;
     private final ChatGPTCopilotServer ChatGPTCopilotServer;
 
-    public TestChatGPTCopilotServerConnectionTask(@Nullable Project project, @NotNull ChatGPTCopilotServer server) {
+    public TestChatGPTCopilotServerConnectionTask(@Nullable Project project, @NotNull ChatGPTCopilotServer server, TextFieldWithCompletion modelField) {
         super(project, "Test Connection", true);
         this.project = project;
         this.ChatGPTCopilotServer = server;
         this.connection = new TaskRepository.CancellableConnection() {
             protected void doTest() throws Exception {
                 ChatChannel chatChannel = ChatChannel.newChannel();
+                chatChannel.setModel(modelField.getText());
                 chatChannel.getMessages().add(new Message("user", "hello"));
                 chatChannel.clearOther();
                 HttpRequest request = HttpRequest.post("https://api.openai.com/v1/chat/completions")

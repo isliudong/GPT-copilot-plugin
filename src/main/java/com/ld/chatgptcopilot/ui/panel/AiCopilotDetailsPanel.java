@@ -141,6 +141,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
             setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, JBColor.WHITE));
 
             textArea.setLineWrap(true);
+            textArea.setFont(new Font("Sans", Font.PLAIN, 14));
             textArea.setWrapStyleWord(true);
             //移除默认的下边框
             textArea.setBorder(BorderFactory.createEmptyBorder());
@@ -169,6 +170,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
                     }
                 }
             });
+            button.setFont(new Font("Arial", Font.PLAIN, 14));
             button.addActionListener(e -> {
                 String text = textArea.getText();
                 if (text != null && !text.isEmpty()) {

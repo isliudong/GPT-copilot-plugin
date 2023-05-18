@@ -112,24 +112,8 @@ public abstract class ChatGPTCopilotServerAuthEditor {
         checkBox.addActionListener(e -> defaultServerChanged());
     }
 
-    private void installListener(JButton button) {
-        button.addActionListener((event) -> SwingUtilities.invokeLater(() -> {
-            TestChatGPTCopilotServerConnectionTask task = new TestChatGPTCopilotServerConnectionTask(project, server);
-            ProgressManager.getInstance().run(task);
-            Exception e = task.getException();
-            if (e == null) {
-                Messages.showMessageDialog(project, "Connection is successful", "Connection", Messages.getInformationIcon());
-            } else if (!(e instanceof ProcessCanceledException)) {
-                String message = e.getMessage();
-                if (e instanceof UnknownHostException) {
-                    message = "Unknown host: " + message;
-                }
-                if (message == null) {
-                    message = "Unknown error";
-                }
-                Messages.showErrorDialog(project, StringUtil.capitalize(message), "Error");
-            }
-        }));
+    public void installListener(JButton button) {
+
     }
 
     protected void apply() {

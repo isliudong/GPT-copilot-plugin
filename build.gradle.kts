@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.ld"
-version = "0.6.3"
+version = "0.6.5"
 
 repositories {
     //阿里云仓库
@@ -36,9 +36,9 @@ dependencies {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2023.1")
+    version.set("2022.3.3")
     type.set("IU") // Target IDE Platform
-    plugins.set(listOf("tasks", "markdown"))
+    plugins.set(listOf("tasks", "markdown","java"))
 }
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin

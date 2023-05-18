@@ -3,13 +3,18 @@ package com.ld.chatgptcopilot.server.editor;
 import static com.intellij.openapi.util.text.StringUtil.trim;
 import static java.lang.String.valueOf;
 
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javax.swing.*;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.progress.ProcessCanceledException;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.TextFieldWithAutoCompletion;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.textCompletion.TextCompletionProvider;
@@ -18,6 +23,7 @@ import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
 import com.ld.chatgptcopilot.model.ChatGPTCopilotServer;
+import com.ld.chatgptcopilot.tasks.TestChatGPTCopilotServerConnectionTask;
 
 public class ChatGPTCopilotServerAPITokenAuthEditor extends ChatGPTCopilotServerAuthEditor {
 
@@ -67,5 +73,26 @@ public class ChatGPTCopilotServerAPITokenAuthEditor extends ChatGPTCopilotServer
         this.server.withApiToken(name, apiToken, model);
         super.apply();
     }
+
+    public void installListener(JButton button) {
+        button.addActionListener((event) -> SwingUtilities.invokeLater(() -> {
+            TestChatGPTCopilotServerConnectionTask task = new TestChatGPTCopilotServerConnectionTask(project, server, modelField);
+            ProgressManager.getInstance().run(task);
+            Exception e = task.getException();
+            if (e == null) {
+                Messages.showMessageDialog(project, "Connection is successful", "Connection", Messages.getInformationIcon());
+            } else if (!(e instanceof ProcessCanceledException)) {
+                String message = e.getMessage();
+                if (e instanceof UnknownHostException) {
+                    message = "Unknown host: " + message;
+                }
+                if (message == null) {
+                    message = "Unknown error";
+                }
+                Messages.showErrorDialog(project, StringUtil.capitalize(message), "Error");
+            }
+        }));
+    }
+
 
 }

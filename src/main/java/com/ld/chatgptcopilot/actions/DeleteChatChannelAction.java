@@ -22,4 +22,10 @@ public class DeleteChatChannelAction extends ChatGPTCopilotComponentAction<AiCop
                 .ifPresent(AiCopilotPanel::deleteSelectedChannel);
     }
 
+    @Override
+    public void update(@NotNull AnActionEvent e) {
+        super.update(e);
+        AiCopilotPanel component = getComponent();
+        e.getPresentation().setEnabled(component.isShowList);
+    }
 }
