@@ -24,6 +24,7 @@ import com.ld.chatgptcopilot.actions.AddChatChannelAction;
 import com.ld.chatgptcopilot.actions.ConfigureChatGptAction;
 import com.ld.chatgptcopilot.actions.DeleteChatChannelAction;
 import com.ld.chatgptcopilot.actions.ShowOrHideChannelListAction;
+import com.ld.chatgptcopilot.actions.TestAction;
 import com.ld.chatgptcopilot.commen.ChatGPTCopilotComponentActionGroup;
 import com.ld.chatgptcopilot.model.ChatChannel;
 import com.ld.chatgptcopilot.persistent.ChatGPTCopilotChannelManager;

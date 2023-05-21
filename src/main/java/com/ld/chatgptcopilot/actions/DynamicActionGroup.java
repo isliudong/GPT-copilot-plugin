@@ -13,6 +13,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.ld.chatgptcopilot.commen.ActionProperties;
 import com.ld.chatgptcopilot.model.ChatChannel;
@@ -21,9 +22,10 @@ import com.ld.chatgptcopilot.persistent.ChatGPTCopilotChannelManager;
 import com.ld.chatgptcopilot.ui.dialog.DynamicCommendDialog;
 import com.ld.chatgptcopilot.util.MultilingualUtil;
 import icons.ChatGPTCopilotIcons;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-public class DynamicActionGroup extends ActionGroup {
+public class DynamicActionGroup extends ActionGroup implements DumbAware {
     public final List<String> defaultActionsCommend = new ArrayList<>(Arrays
             .asList(MultilingualUtil.getKey("explain"),
                     MultilingualUtil.getKey("translate_to_chinese"),
@@ -81,5 +83,24 @@ public class DynamicActionGroup extends ActionGroup {
             chatChannel.getMessages().add(message2);
             askCopilot(project, e.getRequiredData(CommonDataKeys.EDITOR), chatChannel);
         }
+    }
+
+    @Override
+    public void update(@NotNull AnActionEvent e) {
+        super.update(e);
+        Project project = e.getProject();
+        if (isNull(project)) {
+            return;
+        }
+        Editor editor = e.getData(CommonDataKeys.EDITOR);
+        String selectedText = null;
+        if (editor != null) {
+            selectedText = editor.getSelectionModel().getSelectedText();
+        }
+        if (StringUtils.isNotBlank(selectedText)) {
+            e.getPresentation().setEnabledAndVisible(true);
+            return;
+        }
+        e.getPresentation().setEnabledAndVisible(false);
     }
 }

@@ -58,26 +58,51 @@
                     factoryClass="com.ld.chatgptcopilot.ui.ChatGPTCopilotToolWindowFactory"/>
         <notificationGroup id="ChatGPTCopilot.BALLOON" displayType="BALLOON"/>
         <notificationGroup id="ChatGPTCopilot.STICKY_BALLOON" displayType="STICKY_BALLOON"/>
-        <editorFactoryListener implementation="com.ld.chatgptcopilot.MyEditorFactoryListener"/>
-        <editorFactoryMouseListener implementation="com.ld.chatgptcopilot.MyEditorMouseListener"/>
+        <editorFactoryListener implementation="com.ld.chatgptcopilot.smartinput.MyEditorFactoryListener"/>
+        <editorFactoryMouseListener implementation="com.ld.chatgptcopilot.smartinput.MyEditorMouseListener"/>
+        <highlightingPassFactory implementation="com.ld.chatgptcopilot.render.DocRenderPassFactory"/>
+        <editorActionHandler action="EditorCopy" implementationClass="com.ld.chatgptcopilot.render.DocRenderCopyHandler"
+                             id="docRender" order="first"/>
+        <codeInsight.lineMarkerProvider implementationClass="com.ld.chatgptcopilot.render.DocRenderDummyLineMarkerProvider"
+                                        language="JAVA"/>
 
     </extensions>
     <actions>
         <action id="ChatGPTCopilot.actions.AskChatGPTAction"
                 class="com.ld.chatgptcopilot.actions.AskChatGPTAction" icon="ChatGPTCopilotIcons.pluginIcon"
-                text="Explain It" description="Ask the ai copilot">
+                text="Explain" description="Ask the ai copilot">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
             <add-to-group group-id="ToolsMenu" anchor="last"/>
             <add-to-group group-id="ConsoleView.PopupMenu" anchor="first"/>
             <!--<keyboard-shortcut keymap="$default" first-keystroke="shift ctrl a"/>-->
         </action>
+
+        <action id="ChatGPTCopilot.actions.TranslateAction"
+                class="com.ld.chatgptcopilot.translate.actions.TranslateAction" icon="ChatGPTCopilotIcons.pluginIcon"
+                text="Translate It" description="Translate">
+            <add-to-group group-id="EditorPopupMenu" anchor="before" relative-to-action="ChatGPTCopilot.actions.AskChatGPTAction"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <add-to-group group-id="ConsoleView.PopupMenu" anchor="first"/>
+        </action>
+
+        <action id="ChatGPTCopilot.actions.SelectedTranslateAndReplaceAction"
+                class="com.ld.chatgptcopilot.translate.actions.SelectedTranslateAndReplaceAction" icon="ChatGPTCopilotIcons.pluginIcon"
+                text="Translate Replace" description="Translate and replace">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="ChatGPTCopilot.actions.TranslateAction"/>
+        </action>
         <group id="ChatGPTCopilot.customActionGroup" class="com.ld.chatgptcopilot.actions.DynamicActionGroup"
                popup="true"
                icon="ChatGPTCopilotIcons.pluginIcon"
-               text="ChatGPT Copilot" description="Dynamic action">
+               text="Custom Actions" description="Dynamic action">
             <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="ChatGPTCopilot.actions.AskChatGPTAction"/>
             <add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="ChatGPTCopilot.actions.AskChatGPTAction"/>
             <add-to-group group-id="ConsoleView.PopupMenu" anchor="after" relative-to-action="ChatGPTCopilot.actions.AskChatGPTAction"/>
         </group>
+
+        <action id="ToggleRenderedDocPresentationAll" text="Rendered All Doc" class="com.ld.chatgptcopilot.render.ToggleRenderAllDocs">
+            <add-to-group group-id="DocCommentGutterIconContextMenu"/>
+        </action>
+
+        <action id="ToggleRenderedDocPresentationOne" text="Rendered Doc" class="com.ld.chatgptcopilot.render.ToggleRenderedDocPresentationAction"/>
     </actions>
 </idea-plugin>

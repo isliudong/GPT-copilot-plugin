@@ -4,11 +4,15 @@ import static java.util.Objects.isNull;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.ld.chatgptcopilot.commen.ActionProperties;
 import com.ld.chatgptcopilot.commen.ChatGPTCopilotComponentAction;
+import com.ld.chatgptcopilot.render.DocRenderItem;
+import com.ld.chatgptcopilot.render.ToggleRenderedDocPresentationAction;
 import com.ld.chatgptcopilot.ui.panel.AiCopilotPanel;
 import org.jetbrains.annotations.NotNull;
 

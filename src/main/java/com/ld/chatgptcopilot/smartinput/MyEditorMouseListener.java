@@ -1,4 +1,4 @@
-package com.ld.chatgptcopilot;
+package com.ld.chatgptcopilot.smartinput;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -29,7 +29,7 @@ final class MyEditorMouseListener implements EditorMouseListener {
 
     @Override
     public void mouseClicked(@NotNull EditorMouseEvent e) {
-        switchInputMethod(e);
+        //switchInputMethod(e);
     }
 
     private static void switchInputMethod(@NotNull EditorMouseEvent e) {

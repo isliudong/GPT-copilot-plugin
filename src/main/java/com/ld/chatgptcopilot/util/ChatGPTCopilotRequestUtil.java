@@ -61,10 +61,26 @@ public class ChatGPTCopilotRequestUtil {
         HttpRequest request = HttpRequest.post("https://api.openai.com/v1/chat/completions")
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + apiToken)
-                .timeout(60000)
+                .setReadTimeout(60 * 1000 * 5)
+                .timeout(60 * 1000 * 5)
                 .body(JSONUtil.toJsonStr(data));
         try (HttpResponse response = request.execute()) {
             String body = response.body();
+
+            if (response.getStatus() != 200) {
+                if (body == null) {
+                    ChatGPTCopilotCommonUtil.showFailedNotification("Copilot：" + response.getStatus());
+                    return;
+                }
+                try {
+                    Object error = JSONUtil.parse(body).getByPath("error.message");
+                    ChatGPTCopilotCommonUtil.showFailedNotification("Copilot：" + error.toString());
+                    return;
+                } catch (Exception e) {
+                    ChatGPTCopilotCommonUtil.showFailedNotification("Copilot：" + body);
+                    return;
+                }
+            }
             //反序列化 ChatChannel
             ObjectMapper mapper = new ObjectMapper();
             ChatChannel chatChannel1 = mapper.readValue(body, ChatChannel.class);
@@ -77,7 +93,7 @@ public class ChatGPTCopilotRequestUtil {
             ThreadUtil.execAsync(() -> summaryTitle(chatChannel, apiToken));
 
         } catch (Exception e) {
-            ChatGPTCopilotCommonUtil.showFailedNotification("AI Copilot is sick：" + e.getMessage());
+            ChatGPTCopilotCommonUtil.showFailedNotification("Copilot：" + e.getMessage());
         }
     }
 

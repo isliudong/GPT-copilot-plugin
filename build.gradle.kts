@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.ld"
-version = "0.6.5"
+version = "0.7.0"
 
 repositories {
     //阿里云仓库
