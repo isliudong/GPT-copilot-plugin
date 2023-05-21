@@ -9,6 +9,7 @@ import cn.hutool.json.JSONUtil;
 import com.ld.chatgptcopilot.translate.edge.model.EdgeResult;
 import com.ld.chatgptcopilot.translate.edge.model.EdgeText;
 import com.ld.chatgptcopilot.translate.translator;
+import com.ld.chatgptcopilot.util.ChatGPTCopilotCommonUtil;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -133,11 +134,21 @@ public class EdgeTranslator implements translator {
                 .build();
         try {
             Response response = client.newCall(request).execute();
-            if (response.body() != null) {
-                return response.body().string();
+            if (response.body() == null) {
+                ChatGPTCopilotCommonUtil.showFailedNotification(response.code() + "");
+                return null;
             }
-        } catch (IOException e) {
+            String body = response.body().string();
+            if (!response.isSuccessful()) {
+                ChatGPTCopilotCommonUtil.showFailedNotification(body);
+                return null;
+            }
+            if (response.body() != null) {
+                return body;
+            }
+        } catch (Exception e) {
             e.printStackTrace();
+            ChatGPTCopilotCommonUtil.showFailedNotification(e.getMessage());
             return null;
         }
         return null;

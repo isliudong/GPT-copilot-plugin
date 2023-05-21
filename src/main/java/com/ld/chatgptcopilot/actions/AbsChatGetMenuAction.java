@@ -69,7 +69,10 @@ public abstract class AbsChatGetMenuAction extends ChatGPTCopilotComponentAction
         });
     }
 
-    static class PopupPanel extends JBPanel {
+    /**
+     * 用于显示弹出框的面板
+     */
+    public static class PopupPanel extends JBPanel {
         public PopupPanel(LayoutManager layout) {
             super(layout);
             setOpaque(true);

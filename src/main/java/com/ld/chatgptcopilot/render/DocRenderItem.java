@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -286,6 +285,37 @@ public final class DocRenderItem {
         toggle(null);
     }
 
+    private boolean onlytoggle(String textToRender1) {
+        textToRender = textToRender1;
+        if (!(editor instanceof EditorEx)) return false;
+        FoldingModelEx foldingModel = ((EditorEx) editor).getFoldingModel();
+        if (foldRegion == null) {
+            ItemLocation offsets = new ItemLocation(highlighter);
+            Runnable foldingTask = () -> {
+                foldRegion = foldingModel.addCustomLinesFolding(offsets.foldStartLine, offsets.foldEndLine, new DocRenderer(this));
+            };
+            foldingModel.runBatchFoldingOperation(foldingTask, true, false);
+        } else {
+            Runnable foldingTask = () -> {
+                int startOffset = foldRegion.getStartOffset();
+                int endOffset = foldRegion.getEndOffset();
+                foldingModel.removeFoldRegion(foldRegion);
+                for (FoldRegion region : foldingModel.getRegionsOverlappingWith(startOffset, endOffset)) {
+                    if (region.getStartOffset() >= startOffset && region.getEndOffset() <= endOffset) {
+                        region.setExpanded(true);
+                    }
+                }
+                foldRegion = null;
+            };
+            foldingModel.runBatchFoldingOperation(foldingTask, true, false);
+            if (!DocRenderManager.isDocRenderingEnabled(editor)) {
+                // the value won't be updated by DocRenderPass on document modification, so we shouldn't cache the value
+                textToRender = null;
+            }
+        }
+        return true;
+    }
+
     private boolean toggle(@Nullable Collection<Runnable> foldingTasks) {
         if (!(editor instanceof EditorEx)) return false;
         FoldingModelEx foldingModel = ((EditorEx) editor).getFoldingModel();
@@ -335,11 +365,14 @@ public final class DocRenderItem {
                 .finishOnUiThread(ModalityState.any(), (@Nls String html) -> {
                     textToRender = "正在翻译...";
                     toggle();
-
                     ThreadUtil.execAsync(() -> {
-                        textToRender= new EdgeTranslator().translate(html, "en", "zh-CHS");
+                        textToRender = new EdgeTranslator().translate(html, "en", "zh-CHS");
+                        String result = textToRender;
                         SwingUtilities.invokeLater(() -> {
-                            updateRenderers(Collections.singleton(this), true);
+                            //直接更新导致鼠标hover失效，折叠区域对象变了
+                            //updateRenderers(Collections.singleton(this), true);
+                            onlytoggle(result);
+                            onlytoggle(result);
                         });
                     });
 
@@ -660,9 +693,13 @@ public final class DocRenderItem {
             }
             DocRenderItem item = offset < 0 ? null : findItem(editor, y, offset);
             if (item != myCurrentItem) {
-                if (myCurrentItem != null) myCurrentItem.setIconVisible(false);
+                if (myCurrentItem != null) {
+                    myCurrentItem.setIconVisible(false);
+                }
                 myCurrentItem = item;
-                if (myCurrentItem != null) myCurrentItem.setIconVisible(true);
+                if (myCurrentItem != null) {
+                    myCurrentItem.setIconVisible(true);
+                }
             }
         }
 

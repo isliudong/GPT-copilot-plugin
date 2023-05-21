@@ -195,7 +195,7 @@ final class DocRenderer implements CustomFoldRegionRenderer {
   public @Nullable GutterIconRenderer calcGutterIconRenderer(@NotNull CustomFoldRegion region) {
     DocRenderItem.MyGutterIconRenderer highlighterIconRenderer =
       (DocRenderItem.MyGutterIconRenderer)myItem.highlighter.getGutterIconRenderer();
-    return highlighterIconRenderer == null ? null : myItem.new MyGutterIconRenderer(ChatGPTCopilotIcons.pluginIcon,
+    return highlighterIconRenderer == null ? null : myItem.new MyGutterIconRenderer(AllIcons.Gutter.JavadocEdit,
                                                                                     highlighterIconRenderer.isIconVisible());
   }
 
