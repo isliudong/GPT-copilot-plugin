@@ -19,9 +19,13 @@ import com.ld.chatgptcopilot.model.Message;
 import com.ld.chatgptcopilot.util.ChatGPTCopilotCommonUtil;
 import lombok.Getter;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.cef.CefSettings;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
+import org.cef.handler.CefDisplayHandlerAdapter;
+import org.cef.handler.CefLifeSpanHandlerAdapter;
 import org.cef.handler.CefLoadHandlerAdapter;
+import org.cef.network.CefRequest;
 
 @Getter
 public class HtmlMessageListDisplayPanel extends AbstractChatDisplayPanel {
@@ -40,6 +44,52 @@ public class HtmlMessageListDisplayPanel extends AbstractChatDisplayPanel {
         messageHtmlPanel.getCefBrowser().getUIComponent().setBackground(UIUtil.getPanelBackground());
         setBackground(UIUtil.getPanelBackground());
         setContent();
+        addBrowserListener();
+    }
+
+    private void addBrowserListener() {
+        //监听控制台输出
+        CefBrowser cefBrowser = messageHtmlPanel.getCefBrowser();
+        cefBrowser.getClient().addLifeSpanHandler(new CefLifeSpanHandlerAdapter() {
+            @Override
+            public void onAfterCreated(CefBrowser browser) {
+                super.onAfterCreated(browser);
+                browser.getClient().addDisplayHandler(new CefDisplayHandlerAdapter() {
+                    @Override
+                    public boolean onConsoleMessage(CefBrowser browser, CefSettings.LogSeverity level, String message, String source, int line) {
+                        System.out.println("onConsoleMessage: " + message);
+                        return super.onConsoleMessage(browser, level, message, source, line);
+                    }
+                });
+                //监听页面加载完成
+                cefBrowser.getClient().addLoadHandler(new CefLoadHandlerAdapter() {
+                    @Override
+                    public void onLoadingStateChange(CefBrowser browser, boolean isLoading, boolean canGoBack, boolean canGoForward) {
+                        super.onLoadingStateChange(browser, isLoading, canGoBack, canGoForward);
+                        System.out.println("onLoadingStateChange: " + isLoading);
+                    }
+
+                    @Override
+                    public void onLoadStart(CefBrowser browser, CefFrame frame, CefRequest.TransitionType transitionType) {
+                        super.onLoadStart(browser, frame, transitionType);
+                        System.out.println("onLoadStart: " + transitionType);
+                    }
+
+                    @Override
+                    public void onLoadEnd(CefBrowser browser, CefFrame frame, int httpStatusCode) {
+                        super.onLoadEnd(browser, frame, httpStatusCode);
+                        System.out.println("onLoadEnd: " + httpStatusCode);
+                    }
+
+                    @Override
+                    public void onLoadError(CefBrowser browser, CefFrame frame, ErrorCode errorCode, String errorText, String failedUrl) {
+                        super.onLoadError(browser, frame, errorCode, errorText, failedUrl);
+                        System.out.println("onLoadError: " + errorCode + " " + errorText + " " + failedUrl);
+                    }
+                });
+            }
+        });
+
 
     }
 

@@ -22,7 +22,6 @@ import com.intellij.codeInsight.documentation.render.DocRenderManager;
 import com.intellij.ide.HelpTooltip;
 import com.intellij.ide.ui.LafManagerListener;
 import com.intellij.lang.documentation.DocumentationTarget;
-import com.intellij.lang.documentation.InlineDocumentation;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;

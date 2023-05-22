@@ -52,6 +52,10 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
         super(true);
         this.project = project;
         setEmptyContent();
+        //分割面板
+        splitter = new Splitter(true, 1f);
+        //设置分割线的颜色
+        splitter.setDividerWidth(2);
     }
 
     public void showChannel(@Nullable ChatChannel chatChannel, boolean newUI) {
@@ -61,10 +65,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
         }
         this.chatChannel = chatChannel;
         //创建一个聊天面板来显示聊天信息
-        //分割面板
-        splitter = new Splitter(true, 1f);
-        //设置分割线的颜色
-        splitter.setDividerWidth(2);
+
         chatPanel = new AiCopilotChatPanel(chatChannel, project, this, newUI);
         loadFirst(newUI);
         inputPanel = new InputPanel(chatChannel, chatPanel);

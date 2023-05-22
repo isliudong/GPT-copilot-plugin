@@ -3,7 +3,6 @@ package com.ld.chatgptcopilot.render;
 import java.util.List;
 
 import com.intellij.codeInsight.documentation.DocumentationManager;
-import com.intellij.lang.documentation.InlineDocumentation;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiDocCommentBase;
 import com.intellij.psi.PsiFile;
