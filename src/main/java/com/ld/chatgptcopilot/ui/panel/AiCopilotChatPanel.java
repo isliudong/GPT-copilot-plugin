@@ -38,11 +38,14 @@ public class AiCopilotChatPanel extends JBPanel {
     }
 
     public void setContent() {
-        removeAll();
-        setLayout(new BorderLayout());
-        messageListPanel = newUI ? new HtmlMessageListDisplayPanel(project, chatChannel, this) : new MessageListDisplayPanel(project, chatChannel, this);
-        add(messageListPanel, BorderLayout.CENTER);
-        updateUI();
+        // 似乎不加锁浏览器在多次切换后会出现问题？
+        synchronized (AiCopilotChatPanel.class) {
+            removeAll();
+            setLayout(new BorderLayout());
+            messageListPanel = newUI ? new HtmlMessageListDisplayPanel(project, chatChannel, this) : new MessageListDisplayPanel(project, chatChannel, this);
+            add(messageListPanel, BorderLayout.CENTER);
+            updateUI();
+        }
     }
 
 
