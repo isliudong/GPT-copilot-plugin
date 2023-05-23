@@ -91,9 +91,7 @@ public class MessageItemPanel extends JBPanel {
         //按markdown格式解析为html panel
         browser = ChatGPTCopilotCommonUtil.getHtmlPanel();
         browser.setText(ChatGPTCopilotCommonUtil.md2html(noteBody));
-        //使用微软雅黑高亮字体
-        browser.getComponent().setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
-        //纯白字体，纯黑色背景
+        browser.getComponent().setFont(new Font("Sans", Font.PLAIN, 14));
         browser.getComponent().setForeground(JBColor.foreground());
         //设置背景色,使用控制台日志背景色
 
