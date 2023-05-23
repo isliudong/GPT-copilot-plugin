@@ -24,6 +24,11 @@ public interface ChatGPTCopilotIcons {
     Icon compressionHover = IconLoader.getIcon("/icons/compression-icon-hover.svg", ChatGPTCopilotIcons.class);
     Icon spread = IconLoader.getIcon("/icons/spread.svg", ChatGPTCopilotIcons.class);
     Icon recovery = IconLoader.getIcon("/icons/recovery.svg", ChatGPTCopilotIcons.class);
+    Icon turn_on = IconLoader.getIcon("/icons/turnon.svg", ChatGPTCopilotIcons.class);
+    Icon turn_off = IconLoader.getIcon("/icons/turnoff.svg", ChatGPTCopilotIcons.class);
+
+
+
     ProcessIcon processIcon = new ProcessIcon();
     ImageIcon loading = new ImageIcon(getResource("icons/loading.gif"));
     ScalableIconComponent imageIconCom_loading = new ScalableIconComponent(ChatGPTCopilotIcons.loading);
