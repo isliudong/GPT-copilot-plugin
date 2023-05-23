@@ -60,7 +60,7 @@ public class ChatGPTCopilotToolWindowFactory implements ToolWindowFactory, DumbA
         ContentManager contentManager = toolWindow.getContentManager();
         contentManager.removeAllContents(true);
         ContentFactory factory = contentManager.getFactory();
-        JBPanel holderPanel = ChatGPTCopilotPanelUtil.createPlaceHolderPanel("Please add chatGPT copilot API token");
+        JBPanel holderPanel = ChatGPTCopilotPanelUtil.createPlaceHolderPanel("Please add Open Ai API token");
         //添加刷新按钮
         JButton button = new JButton(AllIcons.General.Add);
         button.addActionListener(event -> new ConfigureChatGptDialog(project).show());
