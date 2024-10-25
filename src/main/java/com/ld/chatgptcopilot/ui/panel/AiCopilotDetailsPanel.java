@@ -8,6 +8,7 @@ import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
 
 import cn.hutool.core.thread.ThreadUtil;
 import com.intellij.openapi.actionSystem.ActionManager;
@@ -16,6 +17,7 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.ui.Splitter;
+import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.JBPanel;
@@ -47,6 +49,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
     InputPanel inputPanel;
     JScrollPane chatScrollPane;
     public ChatChannel chatChannel;
+    public static String inputMessage = "";
 
     public AiCopilotDetailsPanel(Project project) {
         super(true);
@@ -141,6 +144,7 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
             //设置黑边
             setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, JBColor.WHITE));
 
+            textArea.setText(inputMessage);
             textArea.setLineWrap(true);
             textArea.setFont(new Font("Sans", Font.PLAIN, 14));
             textArea.setWrapStyleWord(true);
@@ -171,6 +175,13 @@ public class AiCopilotDetailsPanel extends SimpleToolWindowPanel {
                     }
                 }
             });
+            textArea.getDocument().addDocumentListener(new DocumentAdapter() {
+                @Override
+                protected void textChanged(@NotNull DocumentEvent e) {
+                    inputMessage = textArea.getText();
+                }
+            });
+
             button.setFont(new Font("Arial", Font.PLAIN, 14));
             button.addActionListener(e -> {
                 String text = textArea.getText();
